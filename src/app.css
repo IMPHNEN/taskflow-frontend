@@ -19,7 +19,7 @@
 
 @layer components {
     .nav-link {
-        @apply flex items-center gap-3 px-3 py-2 rounded-sm cursor-pointer transition-colors duration-150 hover:text-white hover:bg-darker;
+        @apply flex items-center gap-3 px-3 py-2 rounded-sm cursor-pointer transition-colors duration-150 hover:text-white hover:bg-darker text-gray-500;
     }
 
     .nav-link.active {
