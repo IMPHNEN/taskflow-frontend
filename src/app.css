@@ -2,8 +2,19 @@
 
 @import 'tailwindcss';
 
+@tailwind utilities;
+
 @layer base {
+
+    * {
+        @apply outline-none;
+    }
+    
     html {
         font-family: 'Outfit', sans-serif;
+    }
+
+    button {
+        @apply cursor-pointer;
     }
 }
