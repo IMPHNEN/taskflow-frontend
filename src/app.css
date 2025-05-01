@@ -2,8 +2,23 @@
 
 @import 'tailwindcss';
 
+@theme {
+    --color-primary: #2fcc71;
+    --color-darker: #55be81
+}
+
 @layer base {
     html {
         font-family: 'Outfit', sans-serif;
+    }
+}
+
+@layer components {
+    .nav-link {
+        @apply flex items-center gap-3 px-3 py-2 rounded-sm cursor-pointer transition-colors duration-150 hover:text-white hover:bg-darker;
+    }
+
+    .nav-link.active {
+        @apply text-white bg-darker
     }
 }
