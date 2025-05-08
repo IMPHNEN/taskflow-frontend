@@ -5,8 +5,8 @@
 	let { children } = $props();
 </script>
 
-<div class="flex">
-	<div class="w-64 h-screen bg-white border-r border-gray-200 px-4 py-6">
+<div class="flex h-dvh">
+	<div class="w-64 h-dvh bg-white border-r border-gray-200 px-4 py-6">
 		<div class="flex items-center gap-2 mb-8">
 			<h1 class="font-semibold text-xl">TaskFlow</h1>
 		</div>
@@ -26,8 +26,8 @@
 		</nav>
 	</div>
 	
-	<div class="bg-gray-100 w-full min-h-dvh overflow-y-auto p-4">
-		<div class="p-4 bg-white rounded-md">
+	<div class="bg-gray-50 w-full min-h-dvh overflow-y-auto p-4">
+		<div class="py-2 px-4 rounded-md">
 			{@render children()}
 		</div>
 	</div>
