@@ -8,6 +8,11 @@
 }
 
 @layer base {
+
+    * {
+        @apply outline-none;
+    }
+    
     html {
         font-family: 'Outfit', sans-serif;
     }
@@ -20,5 +25,8 @@
 
     .nav-link.active {
         @apply text-white bg-darker
+    }
+    button {
+        @apply cursor-pointer;
     }
 }
