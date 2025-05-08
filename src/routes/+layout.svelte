@@ -5,6 +5,7 @@
 	let { children } = $props();
 </script>
 
+{#if !page.url.pathname.includes('login') && !page.url.pathname.includes('register')}
 <div class="flex h-dvh">
 	<div class="w-64 h-dvh bg-white border-r border-gray-200 px-4 py-6">
 		<div class="flex items-center gap-2 mb-8">
@@ -32,3 +33,6 @@
 		</div>
 	</div>
 </div>
+{:else}
+{@render children()}
+{/if}
