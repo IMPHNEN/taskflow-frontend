@@ -1,5 +1,5 @@
-<div class="flex flex-col gap-4 p-4 rounded-xl border-gray-100 border hover:border-primary shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer bg-white">
-    <div class="flex justify-between">
+<a href="/projects/1" class="relative group overflow-hidden flex flex-col gap-4 p-4 rounded-xl border-gray-100 border border-b-0 hover:border-primary shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer bg-white">
+    <div class="flex justify-between items-center">
         <div class="flex flex-col gap-2">
             <h1>E-Commerce Website</h1>
             <div class="flex items-center gap-1 text-xs text-gray-500">
@@ -7,9 +7,25 @@
                 <span>2 weeks ago</span>
             </div>
         </div>
-        <button class="">
-            <i class="bx bx-dots-horizontal-rounded text-xl"></i>
-        </button>
+        <div class="relative group/dropdown hover:bg-gray-100 rounded-full px-1 pt-1">
+            <button on:click|preventDefault|stopPropagation class="peer">
+                <i class="bx bx-dots-horizontal-rounded text-xl"></i>
+            </button>
+            <div class="absolute right-0 top-8 bg-white shadow-lg rounded-lg p-2 w-40 border border-gray-100 hidden peer-focus:block">
+                <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2">
+                    <i class="bx bx-edit"></i>
+                    <span>Edit Project</span>
+                </button>
+                <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2">
+                    <i class="bx bx-info-circle"></i>
+                    <span>Something ...</span>
+                </button>
+                <button class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
+                    <i class="bx bx-trash"></i>
+                    <span>Delete Project</span>
+                </button>
+            </div>
+        </div>
     </div>
     <div class="flex flex-col gap-4 text-sm text-gray-700 bg-gray-50 rounded-lg">
         <!-- ? another information -->
@@ -65,7 +81,18 @@
             {Math.floor(Math.random() * 10)} Done
         </div>
     </div>
-    <a href="/projects/1" class="bg-primary mt-4 rounded-lg text-white text-center py-3 w-full hover:bg-darker transition-all duration-300 font-medium hover:shadow-md">
+
+    <div class="flex items-center gap-1 font-light text-gray-500 text-xs">
+        <i class="bx bx-calendar-alt"></i>
+        <span>1 Feb, 2025</span>
+        <span>-</span>
+        <span>10 Mei, 2025</span>
+    </div>
+
+    <button class="bg-primary mt-4 rounded-lg text-white text-center py-3 w-full hover:bg-darker transition-all duration-300 font-medium hover:shadow-md">
         View Details
-    </a>
-</div>
+    </button>
+    <div class="group-hover:-translate-y-2 transition-transform duration-300 absolute -bottom-4 left-0 w-full h-4 bg-primary">
+
+    </div>
+</a>
