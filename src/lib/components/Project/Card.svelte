@@ -89,7 +89,7 @@
         <span>10 Mei, 2025</span>
     </div>
 
-    <button class="bg-primary mt-4 rounded-lg text-white text-center py-3 w-full hover:bg-darker transition-all duration-300 font-medium hover:shadow-md">
+    <button class="bg-primary mt-4 rounded-lg text-white text-center py-3 w-full hover:bg-secondary transition-all duration-300 font-medium hover:shadow-md">
         View Details
     </button>
     <div class="group-hover:-translate-y-2 transition-transform duration-300 absolute -bottom-4 left-0 w-full h-4 bg-primary">

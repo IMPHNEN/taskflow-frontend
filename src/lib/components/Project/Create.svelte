@@ -80,7 +80,7 @@
         </div>
 
         <div class="col-span-2 flex justify-end">
-            <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-darker transition-all">
+            <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-secondary transition-all">
                 Create Project
             </button>
         </div>

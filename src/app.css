@@ -4,7 +4,7 @@
 
 @theme {
     --color-primary: #2fcc71;
-    --color-darker: #55be81
+    --color-secondary: #55be81;
 }
 
 @layer base {
@@ -29,11 +29,11 @@
 
 @layer components {
     .nav-link {
-        @apply flex items-center gap-3 px-3 py-2 rounded-sm cursor-pointer transition-colors duration-150 hover:text-white hover:bg-darker text-gray-500;
+        @apply flex items-center gap-3 px-3 py-2 rounded-sm cursor-pointer transition-colors duration-150 hover:text-white hover:bg-secondary text-gray-500;
     }
 
     .nav-link.active {
-        @apply text-white bg-darker
+        @apply text-white bg-secondary
     }
     button {
         @apply cursor-pointer;

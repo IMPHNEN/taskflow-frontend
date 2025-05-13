@@ -4,6 +4,73 @@
 
     import Item from "$lib/components/Project/Kanban/Item.svelte";
 
+    const tasks = [
+        {
+            title: "Setup Payment Gateway",
+            description: "Integrate Stripe payment system for secure transactions",
+            task_type: "epic",
+            status: "backlog",
+            position: 1,
+            createdAt: "Added 2 days ago"
+        },
+        {
+            title: "Implement Cart System",
+            description: "Create shopping cart functionality with real-time updates", 
+            task_type: "feature",
+            status: "backlog",
+            position: 2,
+            createdAt: "Added 3 days ago"
+        },
+        {
+            title: "Design Product Page",
+            description: "Create responsive layout for product details",
+            task_type: "feature", 
+            status: "todo",
+            position: 3,
+            createdAt: "Added 1 day ago"
+        },
+        {
+            title: "Setup Product Filters",
+            description: "Implement category and price range filters",
+            task_type: "task",
+            status: "todo", 
+            position: 4,
+            createdAt: "Added 1 day ago"
+        },
+        {
+            title: "User Authentication",
+            description: "Implement login and registration system",
+            task_type: "epic",
+            status: "in-progress",
+            position: 5,
+            createdAt: "Started 3 days ago"
+        },
+        {
+            title: "Social Login Integration", 
+            description: "Add Google and Facebook login options",
+            task_type: "feature",
+            status: "in-progress",
+            position: 6,
+            createdAt: "Started 1 day ago"
+        },
+        {
+            title: "Project Setup",
+            description: "Initialize project and configure development environment",
+            task_type: "task",
+            status: "done",
+            position: 7,
+            createdAt: "Completed 1 week ago"
+        },
+        {
+            title: "Database Schema Design",
+            description: "Create initial database structure and relationships",
+            task_type: "feature",
+            status: "done",
+            position: 8,
+            createdAt: "Completed 5 days ago"
+        }
+    ];
+
     onMount(() => {
         const backlog = document.getElementById('backlog');
         const todo = document.getElementById('todo');
@@ -44,7 +111,7 @@
                 <h2 class="font-medium">Project Details</h2>
             </div>
             <div class="flex gap-2">
-                <button class="bg-primary text-white px-4 py-2 rounded hover:bg-darker transition-all">
+                <button class="bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition-all">
                     Edit Project
                 </button>
                 <button class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition-all flex items-center gap-2 ml-2">
@@ -81,7 +148,7 @@
             </div>
             <div class="flex flex-col gap-2 col-span-2">
                 <span class="text-gray-500">Github Repository</span>
-                <a href="#" class="text-primary hover:text-darker">https://github.com/username/e-commerce</a>
+                <a href="#" class="text-primary hover:text-secondary">https://github.com/username/e-commerce</a>
             </div>
         </div>
     </div>
@@ -92,7 +159,7 @@
                 <i class="bx bx-desktop text-xl text-primary"></i>
                 <h2 class="font-medium">Mockup Project</h2>
             </div>
-            <button class="disabled:opacity-50 bg-primary text-white px-4 py-2 rounded hover:bg-darker transition-all">
+            <button class="disabled:opacity-50 bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition-all">
                 Gave Some Preview
             </button>
         </div>
@@ -116,25 +183,9 @@
             </div>
             
             <div id="backlog" class="flex flex-col gap-3 min-h-96">
-                <Item
-                    title="Setup Payment Gateway"
-                    description="Integrate Stripe payment system for secure transactions"
-                    task_type="epic"
-                    status="backlog"
-                    position={1}
-                    createdAt="Added 2 days ago"
-                />
-                <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow transition-all cursor-pointer">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-medium">Implement Cart System</h3>
-                        <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs">Feature</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">Create shopping cart functionality with real-time updates</p>
-                    <div class="flex items-center gap-2 text-xs text-gray-500">
-                        <i class="bx bx-time"></i>
-                        <span>Added 3 days ago</span>
-                    </div>
-                </div>
+                {#each tasks.filter(task => task.status === 'backlog') as task}
+                    <Item {...task} />
+                {/each}
             </div>
         </div>
     
@@ -148,28 +199,9 @@
             </div>
     
             <div id="todo" class="flex flex-col gap-3 min-h-96">
-                <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow transition-all cursor-pointer">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-medium">Design Product Page</h3>
-                        <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs">Feature</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">Create responsive layout for product details</p>
-                    <div class="flex items-center gap-2 text-xs text-gray-500">
-                        <i class="bx bx-time"></i>
-                        <span>Added 1 day ago</span>
-                    </div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow transition-all cursor-pointer">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-medium">Setup Product Filters</h3>
-                        <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs">Task</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">Implement category and price range filters</p>
-                    <div class="flex items-center gap-2 text-xs text-gray-500">
-                        <i class="bx bx-time"></i>
-                        <span>Added 1 day ago</span>
-                    </div>
-                </div>
+                {#each tasks.filter(task => task.status === 'todo') as task}
+                    <Item {...task} />
+                {/each}
             </div>
         </div>
     
@@ -183,28 +215,9 @@
             </div>
     
             <div id="in-progress" class="flex flex-col gap-3 min-h-96">
-                <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow transition-all cursor-pointer">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-medium">User Authentication</h3>
-                        <span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full text-xs">Epic</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">Implement login and registration system</p>
-                    <div class="flex items-center gap-2 text-xs text-gray-500">
-                        <i class="bx bx-time"></i>
-                        <span>Started 3 days ago</span>
-                    </div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow transition-all cursor-pointer">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-medium">Social Login Integration</h3>
-                        <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs">Feature</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">Add Google and Facebook login options</p>
-                    <div class="flex items-center gap-2 text-xs text-gray-500">
-                        <i class="bx bx-time"></i>
-                        <span>Started 1 day ago</span>
-                    </div>
-                </div>
+                {#each tasks.filter(task => task.status === 'in-progress') as task}
+                    <Item {...task} />
+                {/each}
             </div>
         </div>
     
@@ -217,28 +230,9 @@
                 <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">8</span>
             </div>
             <div id="done" class="flex flex-col gap-3 min-h-96">
-                <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow transition-all cursor-pointer">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-medium">Project Setup</h3>
-                        <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs">Task</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">Initialize project and configure development environment</p>
-                    <div class="flex items-center gap-2 text-xs text-gray-500">
-                        <i class="bx bx-time"></i>
-                        <span>Completed 1 week ago</span>
-                    </div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow transition-all cursor-pointer">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-medium">Database Schema Design</h3>
-                        <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs">Feature</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">Create initial database structure and relationships</p>
-                    <div class="flex items-center gap-2 text-xs text-gray-500">
-                        <i class="bx bx-time"></i>
-                        <span>Completed 5 days ago</span>
-                    </div>
-                </div>
+                {#each tasks.filter(task => task.status === 'done') as task}
+                    <Item {...task} />
+                {/each}
             </div>
         </div>
     </div>
