@@ -1,8 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Sortable from 'sortablejs';
-
+    
     import Item from "$lib/components/Project/Kanban/Item.svelte";
+    import Modal from "$lib/components/Project/Kanban/Modal.svelte";
 
     const tasks = [
         {
@@ -70,6 +71,8 @@
             createdAt: "Completed 5 days ago"
         }
     ];
+
+    let showModal = $state(false);
 
     onMount(() => {
         const backlog = document.getElementById('backlog');
@@ -184,7 +187,7 @@
             
             <div id="backlog" class="flex flex-col gap-3 min-h-96">
                 {#each tasks.filter(task => task.status === 'backlog') as task}
-                    <Item {...task} />
+                    <Item {...task} handleContextMenu={() => showModal = true} />
                 {/each}
             </div>
         </div>
@@ -200,7 +203,7 @@
     
             <div id="todo" class="flex flex-col gap-3 min-h-96">
                 {#each tasks.filter(task => task.status === 'todo') as task}
-                    <Item {...task} />
+                    <Item {...task} handleContextMenu={() => showModal = true} />
                 {/each}
             </div>
         </div>
@@ -216,7 +219,7 @@
     
             <div id="in-progress" class="flex flex-col gap-3 min-h-96">
                 {#each tasks.filter(task => task.status === 'in-progress') as task}
-                    <Item {...task} />
+                    <Item {...task} handleContextMenu={() => showModal = true} />
                 {/each}
             </div>
         </div>
@@ -231,9 +234,13 @@
             </div>
             <div id="done" class="flex flex-col gap-3 min-h-96">
                 {#each tasks.filter(task => task.status === 'done') as task}
-                    <Item {...task} />
+                    <Item {...task} handleContextMenu={() => showModal = true} />
                 {/each}
             </div>
         </div>
     </div>
 </div>
+
+{#if showModal}
+    <Modal close={() => showModal = false} />
+{/if}

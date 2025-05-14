@@ -26,7 +26,5 @@
 </div>
 
 {#if showCreate}
-    <div on:click={() => showCreate = false} class="fixed top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center">
-        <ProjectCreate close={() => showCreate = false} />
-    </div>
+    <ProjectCreate close={() => showCreate = false} />
 {/if}
