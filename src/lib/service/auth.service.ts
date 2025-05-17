@@ -6,10 +6,31 @@ interface GitHubLoginResponse {
   code_verifier: string;
 }
 
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
 /**
  * AuthService handles all authentication related API calls
  */
 export const AuthService = {
+  /**
+   * Login with email and password
+   */
+  login: async (credentials: LoginCredentials): Promise<AuthSession> => {
+    const response = await apiClient.post<AuthSession>('/user/auth/login', credentials);
+    return response.data;
+  },
+
+  /**
+   * Register a new user
+   */
+  register: async (userData: { email: string; password: string; full_name: string }): Promise<AuthSession> => {
+    const response = await apiClient.post<AuthSession>('/user/auth/register', userData);
+    return response.data;
+  },
+
   /**
    * Get GitHub OAuth login URL
    */

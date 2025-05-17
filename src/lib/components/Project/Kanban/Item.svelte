@@ -3,7 +3,17 @@
     let { title, description, task_type, status, position, createdAt, handleContextMenu } = $props();
 </script>
 
-<div on:click|preventDefault|stopPropagation={handleContextMenu} class="bg-white overflow-hidden rounded-lg shadow-sm hover:shadow transition-all cursor-pointer">
+<div 
+    on:click|preventDefault|stopPropagation={handleContextMenu} 
+    on:keydown|preventDefault|stopPropagation={(e: KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            handleContextMenu(e);
+        }
+    }} 
+    role="button"
+    tabindex="0"
+    class="bg-white overflow-hidden rounded-lg shadow-sm hover:shadow transition-all cursor-pointer"
+>
     <div class="w-full h-1 {Math.random() < 0.25 ? 'bg-orange-500' : Math.random() < 0.5 ? 'bg-red-500' : Math.random() < 0.75 ? 'bg-green-500' : 'bg-yellow-500'}"></div>
     <div class="p-4">
         <div class="flex justify-between items-start mb-2">

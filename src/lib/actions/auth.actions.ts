@@ -23,6 +23,70 @@ export async function initAuth() {
 }
 
 /**
+ * Login with email and password
+ */
+export async function login(email: string, password: string) {
+  authStore.setLoading(true);
+  
+  try {
+    const session = await AuthService.login({ email, password });
+    
+    // Store tokens
+    AuthService.storeTokens(session.access_token, session.refresh_token);
+    
+    // Get user info and update auth store
+    if (session.user) {
+      authStore.setAuthenticated(session.user);
+    } else {
+      const user = await UserService.getCurrentUser();
+      authStore.setAuthenticated(user);
+    }
+    
+    // Redirect to dashboard
+    goto('/');
+    return { success: true };
+  } catch (error) {
+    console.error('Error logging in:', error);
+    authStore.setError('Invalid email or password');
+    return { success: false, error: 'Invalid email or password' };
+  }
+}
+
+/**
+ * Register a new user
+ */
+export async function register(email: string, password: string, fullName: string) {
+  authStore.setLoading(true);
+  
+  try {
+    const session = await AuthService.register({ 
+      email, 
+      password, 
+      full_name: fullName 
+    });
+    
+    // Store tokens
+    AuthService.storeTokens(session.access_token, session.refresh_token);
+    
+    // Get user info and update auth store
+    if (session.user) {
+      authStore.setAuthenticated(session.user);
+    } else {
+      const user = await UserService.getCurrentUser();
+      authStore.setAuthenticated(user);
+    }
+    
+    // Redirect to dashboard
+    goto('/');
+    return { success: true };
+  } catch (error) {
+    console.error('Error registering:', error);
+    authStore.setError('Failed to create account');
+    return { success: false, error: 'Failed to create account' };
+  }
+}
+
+/**
  * Handle GitHub login - get login URL
  */
 export async function getGitHubLoginUrl() {
@@ -68,7 +132,7 @@ export async function handleGitHubCallback(code: string) {
     }
     
     // Redirect to dashboard
-    goto('/dashboard');
+    goto('/');
   } catch (error) {
     console.error('Error exchanging GitHub code:', error);
     authStore.setError('Failed to authenticate with GitHub');

@@ -151,7 +151,7 @@
             </div>
             <div class="flex flex-col gap-2 col-span-2">
                 <span class="text-gray-500">Github Repository</span>
-                <a href="#" class="text-primary hover:text-secondary">https://github.com/username/e-commerce</a>
+                <a href="?#" class="text-primary hover:text-secondary">https://github.com/username/e-commerce</a>
             </div>
         </div>
     </div>

@@ -1,32 +1,15 @@
-// Auth actions
-export {
-  initAuth,
-  getGitHubLoginUrl,
-  handleGitHubCallback,
-  signOut
-} from './auth.actions';
+// Export auth actions
+export * from './auth.actions';
 
-// Project actions
-export {
-  loadProjects,
-  loadProject,
-  createProject,
-  updateProject,
-  deleteProject,
-  generateBRD,
-  generatePRD,
-  generateProjectScope,
-  validateMarketFit,
-  setupRepository
-} from './project.actions';
+// Export project actions
+export * from './project.actions';
 
-// Task actions
-export {
-  loadTasks,
-  loadTask,
-  createTask,
-  updateTask,
-  updateTaskStatus,
-  deleteTask,
-  reorderTasks
-} from './task.actions'; 
+// Export task actions
+export * from './task.actions';
+
+// Export dashboard actions
+export * from './dashboard.actions';
+
+// Alias for better naming
+export { loadProjects as fetchProjects } from './project.actions';
+export { deleteProject } from './project.actions'; 

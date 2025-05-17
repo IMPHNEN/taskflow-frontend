@@ -2,13 +2,28 @@
     import { validator } from '@felte/validator-yup';
     import { createForm } from 'felte';
     import { object, string } from 'yup';
+    import { login, getGitHubLoginUrl } from '$lib/actions/auth.actions';
+    import { authStore } from '$lib/stores';
+    import { onMount } from 'svelte';
+
+    let errorMessage: string | null = null;
+    let githubLoading = false;
+
+    // Subscribe to auth store to get error message
+    $: if ($authStore.error) {
+        errorMessage = $authStore.error;
+    }
 
     const { form, errors, data, isSubmitting, isValidating, isValid } = createForm<{
         email: string
         password: string
     }>({
-        onSubmit: (values, context) => {
-			// submit
+        onSubmit: async (values) => {
+            errorMessage = null;
+            const result = await login(values.email, values.password);
+            if (!result.success) {
+                errorMessage = result.error || 'Login failed';
+            }
         },
         initialValues: {
             email: '',
@@ -22,6 +37,19 @@
             }),
         })
     });
+
+    async function handleGitHubLogin() {
+        try {
+            githubLoading = true;
+            const loginUrl = await getGitHubLoginUrl();
+            window.location.href = loginUrl;
+        } catch (error) {
+            console.error('GitHub login error:', error);
+            errorMessage = 'Failed to start GitHub login';
+        } finally {
+            githubLoading = false;
+        }
+    }
 </script>
 
 <svelte:head>
@@ -34,6 +62,12 @@
 			<h1 class="text-4xl font-semibold text-gray-900 mb-2">Login</h1>
 			<p class="text-sm font-medium text-gray-500">Welcome back!</p>
 		</div>
+
+        {#if errorMessage}
+        <div class="w-full p-3 mb-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+            {errorMessage}
+        </div>
+        {/if}
 
 		<form use:form method="POST" class="w-full space-y-5">
 			<div class="space-y-1.5">
@@ -77,11 +111,11 @@
 			</div>
 
 			<button
-                disabled={$isSubmitting || $isValidating || !$isValid}
+                disabled={$isSubmitting || $isValidating || !$isValid || $authStore.isLoading}
 				type="submit"
 				class="w-full py-3 px-4 mt-6 bg-[#2fcc71] disabled:opacity-50 text-white font-semibold rounded-lg hover:bg-[#27ae60] transition-colors text-base flex items-center justify-center gap-2"
 			>
-				Login
+				{$isSubmitting || $authStore.isLoading ? 'Logging in...' : 'Login'}
 				<i class='bx bx-right-arrow-alt'></i>
 			</button>
 
@@ -94,6 +128,7 @@
 			<button
 				type="button" 
 				class="w-full py-3 px-4 bg-white border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors text-base flex items-center justify-center gap-2"
+                disabled={githubLoading}
 			>
 				<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5" />
 				Login with Google
@@ -102,9 +137,11 @@
 			<button
 				type="button" 
 				class="w-full py-3 px-4 mt-4 bg-black/90 border font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-white"
+                on:click={handleGitHubLogin}
+                disabled={githubLoading}
 			>
 			<i class="bx bxl-github text-2xl"></i>
-				Login with GitHub
+				{githubLoading ? 'Loading...' : 'Login with GitHub'}
 			</button>
 
 			<div class="text-center mt-6">

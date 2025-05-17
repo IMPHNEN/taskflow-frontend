@@ -117,6 +117,7 @@ export interface Task {
   position: number;
   created_at: string;
   updated_at: string;
+  project_name?: string;
 }
 
 export interface TaskCreate {
