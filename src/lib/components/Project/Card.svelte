@@ -1,18 +1,51 @@
-<a href="/projects/1" class="relative group overflow-hidden flex flex-col gap-4 p-4 rounded-xl border-gray-100 border border-b-0 hover:border-primary shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer bg-white">
+<script lang="ts">
+    import { goto } from '$app/navigation';
+    import type { Project } from '$lib/types';
+    import { formatDistanceToNow, format } from 'date-fns';
+    import { deleteProject } from '$lib/actions';
+
+    export let project: Project;
+
+    const formatDate = (dateString: string | null | undefined) => {
+        if (!dateString) return 'Not set';
+        return format(new Date(dateString), 'd MMM, yyyy');
+    };
+
+    const formatTimeAgo = (dateString: string) => {
+        return formatDistanceToNow(new Date(dateString), { addSuffix: true });
+    };
+
+    const handleDelete = async (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (confirm('Are you sure you want to delete this project?')) {
+            await deleteProject(project.id);
+        }
+    };
+
+    const handleEdit = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+        goto(`/projects/${project.id}/edit`);
+    };
+</script>
+
+<a href="/projects/{project.id}" class="relative group overflow-hidden flex flex-col gap-4 p-4 rounded-xl border-gray-100 border border-b-0 hover:border-primary shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer bg-white">
     <div class="flex justify-between items-center">
         <div class="flex flex-col gap-2">
-            <h1>E-Commerce Website</h1>
+            <h1>{project.name}</h1>
             <div class="flex items-center gap-1 text-xs text-gray-500">
                 <i class="bx bx-time"></i>
-                <span>2 weeks ago</span>
+                <span>{formatTimeAgo(project.created_at)}</span>
             </div>
         </div>
         <div class="relative group/dropdown hover:bg-gray-100 rounded-full px-1 pt-1">
-            <button on:click|preventDefault|stopPropagation class="peer">
+            <button on:click|preventDefault|stopPropagation class="peer" aria-label="Project options">
                 <i class="bx bx-dots-horizontal-rounded text-xl"></i>
             </button>
             <div class="absolute right-0 top-8 bg-white shadow-lg rounded-lg p-2 w-40 border border-gray-100 hidden peer-focus:block">
-                <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2">
+                <button on:click={handleEdit} class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2">
                     <i class="bx bx-edit"></i>
                     <span>Edit Project</span>
                 </button>
@@ -20,7 +53,7 @@
                     <i class="bx bx-info-circle"></i>
                     <span>Something ...</span>
                 </button>
-                <button class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
+                <button on:click={handleDelete} class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
                     <i class="bx bx-trash"></i>
                     <span>Delete Project</span>
                 </button>
@@ -59,7 +92,7 @@
         </div> -->
         <div>
             <p>
-            A modern e-commerce platform with seamless user experience, secure payment processing, and robust product management capabilities.
+            {project.description}
             </p>
         </div>
     </div>
@@ -84,9 +117,9 @@
 
     <div class="flex items-center gap-1 font-light text-gray-500 text-xs">
         <i class="bx bx-calendar-alt"></i>
-        <span>1 Feb, 2025</span>
+        <span>{formatDate(project.start_date)}</span>
         <span>-</span>
-        <span>10 Mei, 2025</span>
+        <span>{formatDate(project.end_date)}</span>
     </div>
 
     <button class="bg-primary mt-4 rounded-lg text-white text-center py-3 w-full hover:bg-secondary transition-all duration-300 font-medium hover:shadow-md">

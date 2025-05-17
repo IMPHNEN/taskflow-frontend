@@ -1,8 +1,21 @@
 <script lang="ts">
     import { page } from '$app/state';
 	import '../app.css';
+	import { onMount } from 'svelte';
+	import { authStore } from '$lib/stores';
+	import { initAuth, signOut } from '$lib/actions/auth.actions';
 	
 	let { children } = $props();
+
+	onMount(() => {
+		// Initialize auth state on page load
+		initAuth();
+	});
+
+	// Handle logout
+	function handleLogout() {
+		signOut();
+	}
 </script>
 
 {#if !page.url.pathname.includes('login') && !page.url.pathname.includes('register')}
@@ -20,7 +33,7 @@
 				<i class='bx bx-list-ul'></i>
 				<span>Projects</span>
 			</a>
-			<button class="nav-link">
+			<button class="nav-link" on:click={handleLogout}>
 				<i class="bx bx-log-out"></i>
 				<span>Logout</span>
 			</button>
@@ -40,11 +53,17 @@
 					class="w-full text-gray-900"
 				/>
 			</form>
-			<button class="text-3xl flex justify-center items-center">
+			<button class="text-3xl flex justify-center items-center" aria-label="GitHub">
 				<i class="bx bxl-github"></i>
 			</button>
 			<div class="w-10 h-10 rounded-full overflow-hidden">
-				<img src="https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=700&q=90" alt="">
+				{#if $authStore.user?.avatar_url}
+					<img src={$authStore.user.avatar_url} alt={$authStore.user.full_name || 'User'}>
+				{:else}
+					<div class="w-full h-full bg-gray-300 flex items-center justify-center text-white">
+						{$authStore.user?.full_name ? $authStore.user.full_name.charAt(0).toUpperCase() : 'U'}
+					</div>
+				{/if}
 			</div>
 		</div>
 
