@@ -33,6 +33,83 @@
     input[type="checkbox"] {
         @apply rounded-lg cursor-pointer accent-primary w-4 h-4;
     }
+
+    
+
+    #market-markdown > h1 {
+        @apply text-3xl font-bold mb-4;
+    }
+
+    #market-markdown > h2 {
+        @apply text-2xl font-bold mb-3;
+    }
+
+    #market-markdown > h3 {
+        @apply text-xl font-bold mb-2;
+    }
+
+    #market-markdown > p {
+        @apply mb-4 leading-relaxed;
+    }
+
+    #market-markdown > ul, 
+    #market-markdown > ol {
+        @apply mb-4 ml-6;
+    }
+
+    #market-markdown > ul {
+        @apply list-disc;
+    }
+
+    #market-markdown > ol {
+        @apply list-decimal;
+    }
+
+    #market-markdown > li {
+        @apply mb-2;
+    }
+
+    #market-markdown > blockquote {
+        @apply border-l-4 border-gray-300 pl-4 italic my-4;
+    }
+
+    #market-markdown > code {
+        @apply bg-gray-100 px-1 py-0.5 rounded text-sm;
+    }
+
+    #market-markdown > pre {
+        @apply bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto;
+    }
+
+    #market-markdown > pre > code {
+        @apply bg-transparent p-0;
+    }
+
+    #market-markdown > a {
+        @apply text-primary hover:underline;
+    }
+
+    #market-markdown > img {
+        @apply max-w-full h-auto rounded-lg my-4;
+    }
+
+    #market-markdown > table {
+        @apply w-full table-auto border border-gray-300 mb-4;
+    }
+
+    #market-markdown > table th,
+    #market-markdown > table td {
+        @apply border border-gray-300 px-4 py-2;
+    }
+
+    #market-markdown > table th {
+        @apply bg-primary text-white font-semibold;
+    }
+
+    #market-markdown > hr {
+        @apply my-6 border-t border-gray-300;
+    }
+
 }
 
 @layer components {

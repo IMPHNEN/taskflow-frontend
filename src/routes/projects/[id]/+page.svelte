@@ -1,9 +1,202 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Sortable from 'sortablejs';
-    
+
     import Item from "$lib/components/Project/Kanban/Item.svelte";
     import Modal from "$lib/components/Project/Kanban/Modal.svelte";
+    import Market from "$lib/components/Project/Market.svelte";
+    
+    const markdown = `
+# Market Validation Report: Project Management Tools
+
+_Date: May 17, 2025_
+
+---
+
+## Executive Summary
+
+This report validates the market opportunity for a new project management (PM) tool by analyzing competitors, identifying unique selling points (USPs), projecting market growth, and estimating revenue streams and initial costs.
+
+**Key Findings:**
+
+- Current leading competitors include ClickUp, Asana, Trello, Jira, and Monday.com, with broad features but notable gaps in advanced analytics, niche industry customization, and AI integration.
+- Market trends show growing demand for remote collaboration tools, AI enhancements, and customizable automation.
+- Our proposed PM tool should emphasize AI-driven personalization, advanced analytics, and niche industry focus supported by flexible, usage-based pricing.
+- Market size is expanding steadily, with an expected CAGR of ~15% over the next 5 years.
+- Multiple revenue streams are viable, including subscriptions, enterprise licensing, and marketplace fees.
+- Initial MVP development requires a moderately sized team and 3-4 months, with estimated costs roughly $60k-$80k.
+
+**Recommendations:**
+
+- Differentiate by embedding advanced AI and analytics tools alongside deep niche-specific customizations.
+- Adopt flexible, usage-based pricing to appeal to startups and SMBs.
+- Focus marketing on enhanced remote collaboration and automation to leverage market trends.
+
+---
+
+## 1. Competitor Analysis
+
+### Overview of Top Competitors
+
+| Competitor     | Key Features                                                                                                                      | Pricing Plans (per user/month)                           | Strengths                                                | Weaknesses                                         |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------- |
+| **ClickUp**    | Project management, task tracking, time tracking, team collaboration, reports, extensive integrations, automation & customization | Free, Starter $5, Business $9, Enterprise custom         | Wide feature set; free tier; scalable; strong automation | Pricey for small teams; learning curve; complexity |
+| **Asana**      | Task & project tracking, timelines, dashboards, automation, collaboration tools                                                   | Free, Premium $10.99, Business $24.99, Enterprise custom | Strong collaboration focus; clean UI                     | Limited advanced analytics; pricey tiers           |
+| **Trello**     | Kanban boards, checklists, labels, power-ups, collaboration                                                                       | Free, Business $12.50, Enterprise custom                 | Intuitive visual management; easy to use                 | Limited in-depth reporting; lacks niche features   |
+| **Jira**       | Agile project management, customizable workflows, reporting                                                                       | Free, Standard $7.75, Premium $15.25, Enterprise custom  | Robust agile tools; customizable; strong reporting       | Complex UI; steep learning curve                   |
+| **Monday.com** | Project tracking, automation, dashboards, integrations, collaboration                                                             | Basic $8, Standard $10, Pro $16, Enterprise custom       | Flexible; good for all team sizes; visual tools          | Expensive; limited free plan                       |
+
+### Competitor Comparison Table
+
+| Feature                      | ClickUp | Asana   | Trello    | Jira     | Monday.com |
+| ---------------------------- | ------- | ------- | --------- | -------- | ---------- |
+| Task Management              | ✔       | ✔       | ✔         | ✔        | ✔          |
+| Time Tracking                | ✔       | Limited | No        | Limited  | ✔          |
+| Advanced Analytics           | Basic   | Limited | No        | Advanced | Basic      |
+| Automation                   | ✔       | ✔       | Power-ups | ✔        | ✔          |
+| AI Integration               | No      | No      | No        | No       | No         |
+| Niche Industry Customization | Limited | No      | No        | Custom   | Limited    |
+| Collaboration Tools          | ✔       | ✔       | ✔         | ✔        | ✔          |
+| Pricing Flexibility          | Tiered  | Tiered  | Tiered    | Tiered   | Tiered     |
+| Free Plan Availability       | Yes     | Yes     | Yes       | Yes      | Limited    |
+
+---
+
+### Competitor Mindshare Visualization
+
+\`\`\`mermaid
+pie
+    title Competitor Mindshare
+    "ClickUp": 29
+    "Asana": 24
+    "Trello": 18
+    "Jira": 16
+    "Monday.com": 13
+\`\`\`
+
+---
+
+## 2. Recommended Unique Selling Points (USPs)
+
+Based on market gaps and competitor limitations, we recommend the following USPs:
+
+- **Niche Industry Customization:** Tailored workflows and templates designed specifically for industries like healthcare, construction, and education.
+- **Enhanced User Analytics:** AI-driven dashboards delivering deep insights on team productivity, project risks, and resource optimization.
+- **AI-Driven Personalization:** Intelligent task prioritization, automated scheduling, and predictive project outcome analysis.
+- **Flexible Pricing Models:** Usage-based pricing allowing startups and smaller teams to scale cost-effectively.
+- **Integrated Remote Collaboration:** Advanced real-time communication tools embedded within the platform to support hybrid/remote teams.
+
+---
+
+### USP Relationships Visualization
+
+\`\`\`mermaid
+graph LR
+    A[Niche Industry Customization] --> B[Increased Adoption]
+    C[Enhanced User Analytics] --> D[Improved User Experience]
+    E[AI-Driven Personalization] --> F[Enhanced User Engagement]
+    G[Flexible Pricing Models] --> H[Broader Market Reach]
+\`\`\`
+
+---
+
+## 3. Future Market Projection
+
+Industry research indicates a strong growth trajectory driven by digital transformation and remote work demand.
+
+| Year | Estimated Market Size (Billion USD) |
+| ---- | ----------------------------------- |
+| 2025 | 2.5                                 |
+| 2026 | 2.9                                 |
+| 2027 | 3.3                                 |
+| 2028 | 3.8                                 |
+| 2029 | 4.4                                 |
+| 2030 | 5.0                                 |
+
+---
+
+### Market Size Projection Chart
+
+\`\`\`mermaid
+xychart-beta
+    title "Market Size Projection"
+    x-axis "Year" [2025, 2026, 2027, 2028, 2029, 2030]
+    y-axis "Market Size (Billion USD)" 0 --> 5.5
+    line [2.5, 2.875, 3.3, 3.8, 4.4, 5.0]
+\`\`\`
+
+---
+
+## 4. Revenue Streams and Potential Earnings
+
+### Potential Revenue Streams
+
+- **Subscriptions:** Monthly/Annual user subscriptions with tiered or usage-based pricing.
+- **Marketplace Fees:** Commissions on third-party app/extension sales within our platform.
+- **Enterprise Licensing:** Custom contracts for large organizations requiring advanced features and support.
+- **Professional Services:** Consulting, onboarding, and training services.
+- **Advertisements:** Limited, contextual promotions for complementary tools.
+
+### Estimated Revenue Distribution (Year 1–3)
+
+\`\`\`mermaid
+pie
+title Revenue Streams
+"Subscriptions": 50
+"Enterprise Licensing": 25
+"Marketplace Fees": 15
+"Professional Services": 7
+"Advertisements": 3
+\`\`\`
+
+---
+
+## 5. Initial Cost Estimate for MVP Development
+
+Key cost components include human resources, tools, and time:
+
+| Cost Category    | Details                          | Estimated Cost |
+| ---------------- | -------------------------------- | -------------- |
+| Human Resources  | Developers (3) - $25k each       | $75,000        |
+|                  | UI/UX Designers (1)              | $15,000        |
+|                  | QA Engineer (1)                  | $10,000        |
+| Tools & Software | Cloud Infrastructure (3 months)  | $5,000         |
+|                  | Licensing/Third-Party APIs       | $4,000         |
+| Time Allocation  | Development Timeline: 3-4 months | Included in HR |
+| Miscellaneous    | Marketing Pre-launch, Legal      | $3,000         |
+
+---
+
+### Cost Breakdown Flowchart
+
+\`\`\`mermaid
+flowchart TD
+A[Project Cost Estimate] --> B[Human Resources]
+A --> C[Tools & Software]
+A --> D[Time Allocation]
+A --> E[Miscellaneous Expenses]
+B --> B1[Developers - $75k]
+B --> B2[Designers - $15k]
+B --> B3[QA Engineer - $10k]
+C --> C1[Cloud Services - $5k]
+C --> C2[APIs/Tools - $4k]
+D --> D1[3-4 Months Timeline]
+E --> E1[Marketing & Legal - $3k]
+\`\`\`
+
+---
+
+## Conclusion
+
+The project management software market is vibrant and growing, but existing competitors leave significant gaps in AI-driven analytics, niche customization, and flexible pricing. Our proposed solution can leverage these gaps by focusing on AI integrations, industry-specific workflows, and subscription flexibility, backed by a reasonable MVP development budget.
+
+Targeting these areas promises competitive differentiation, strong user adoption, and diversified revenue opportunities in a flourishing marketplace.
+
+---
+
+# End of Report
+
+    `
 
     const tasks = [
         {
@@ -238,6 +431,21 @@
                 {/each}
             </div>
         </div>
+    </div>
+
+    <div class="flex flex-col gap-4 bg-white p-4 rounded-lg shadow">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="bx bx-search text-xl text-primary"></i>
+                <h2 class="font-medium">Market Research</h2>
+            </div>
+            <button class="disabled:opacity-50 bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition-all">
+                Generate Market Research
+            </button>
+        </div>
+
+        <Market {markdown} />
+    
     </div>
 </div>
 
