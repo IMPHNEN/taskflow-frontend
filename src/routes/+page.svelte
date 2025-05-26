@@ -1,6 +1,5 @@
 <script>
-    // Imouto kasih script lucu buat dropdown nav di mobile ya, onii-chan! (≧◡≦) ♡
-    import { fade, scale } from 'svelte/transition';
+    import { fade } from 'svelte/transition';
     let navOpen = false;
     function toggleNav() {
         navOpen = !navOpen;
@@ -28,9 +27,9 @@
                 <a href="/register" class="text-gray-600">
                     Sign In
                 </a>
-                <button class="bg-primary text-white px-6 py-3 rounded-md">
+                <a href="/register" class="bg-primary text-white px-6 py-3 rounded-md">
                     Get Started Free
-                </button>
+                </a>
             </div>
         </nav>
         <!-- Mobile Dropdown Nav -->
@@ -41,9 +40,9 @@
                     <li><a href="#howitworks" class="block py-2 px-2 rounded hover:bg-gray-50 transition" on:click={toggleNav}>How It Works</a></li>
                     <li class="border-t border-gray-100 mt-2 pt-2 flex flex-col gap-2">
                         <a href="/register" class="block py-2 px-2 rounded text-gray-600 hover:bg-gray-50 transition">Sign In</a>
-                        <button class="bg-primary text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-secondary transition w-full">
+                        <a href="/register" class="bg-primary text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-secondary transition w-full">
                             Get Started Free
-                        </button>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -64,10 +63,10 @@
                 Streamlined project management tool tailored for solo-preneurs. Plan, track, and execute projects efficiently with intelligent, data-driven insights.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 mb-10">
-                <button class="bg-primary text-white px-6 py-3 rounded-md font-semibold shadow hover:bg-secondary transition">
+                <a href="/register" class="bg-primary text-white px-6 py-3 rounded-md font-semibold shadow hover:bg-secondary transition">
                     Start Your Free Trial
                     <span class="ml-2">→</span>
-                </button>
+                </a>
                 <a href="#" class="flex items-center justify-center px-6 py-3 border border-gray-200 rounded-md text-primary font-semibold bg-white hover:bg-gray-50 transition">
                     Watch Demo
                     <i class='bx bx-play text-2xl'></i>
