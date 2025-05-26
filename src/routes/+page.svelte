@@ -1,16 +1,30 @@
+<script>
+    // Imouto kasih script lucu buat dropdown nav di mobile ya, onii-chan! (≧◡≦) ♡
+    import { fade, scale } from 'svelte/transition';
+    let navOpen = false;
+    function toggleNav() {
+        navOpen = !navOpen;
+    }
+</script>
 <div class="font-inter">
+
     <header class="sticky top-0 left-0 bg-white shadow-xs z-50">
         <nav class="flex justify-between items-center p-4">
             <a href="/" class="text-2xl font-bold">
                 <p class="font-bold text-primary">TaskFlow</p>
             </a>
-            <ul class="flex gap-8 text-gray-600 font-medium">
-                <li><a href="#">Features</a></li>
-                <li><a href="#">How It Works</a></li>
-                <li><a href="#">Pricing</a></li>
-                <li><a href="#">About</a></li>
+            <!-- Desktop Nav -->
+            <ul class="max-md:hidden flex gap-8 text-gray-600 font-medium">
+                <li><a href="#whytaskflow">Why TaskFlow</a></li>
+                <li><a href="#howitworks">How It Works</a></li>
             </ul>
-            <div class="flex gap-8 items-center font-medium text-sm">
+            <!-- Mobile Hamburger -->
+            <button class="md:hidden flex flex-col justify-center items-center w-10 h-10 rounded hover:bg-gray-100 transition" on:click={toggleNav} aria-label="Open navigation">
+                <span class="block w-6 h-0.5 bg-gray-700 mb-1 transition-all" style="transform: {navOpen ? 'rotate(45deg) translateY(7px)' : 'none'}"></span>
+                <span class="block w-6 h-0.5 bg-gray-700 mb-1 transition-all" style="opacity: {navOpen ? 0 : 1}"></span>
+                <span class="block w-6 h-0.5 bg-gray-700 transition-all" style="transform: {navOpen ? 'rotate(-45deg) translateY(-7px)' : 'none'}"></span>
+            </button>
+            <div class="flex gap-8 items-center font-medium text-sm max-md:hidden">
                 <a href="/register" class="text-gray-600">
                     Sign In
                 </a>
@@ -19,6 +33,21 @@
                 </button>
             </div>
         </nav>
+        <!-- Mobile Dropdown Nav -->
+        {#if navOpen}
+            <div class="md:hidden px-4 pb-4" transition:fade={{ duration: 150 }}>
+                <ul class="flex flex-col gap-2 text-gray-700 font-medium bg-white rounded-lg shadow-lg p-4 border border-gray-100">
+                    <li><a href="#whytaskflow" class="block py-2 px-2 rounded hover:bg-gray-50 transition" on:click={toggleNav}>Why TaskFlow</a></li>
+                    <li><a href="#howitworks" class="block py-2 px-2 rounded hover:bg-gray-50 transition" on:click={toggleNav}>How It Works</a></li>
+                    <li class="border-t border-gray-100 mt-2 pt-2 flex flex-col gap-2">
+                        <a href="/register" class="block py-2 px-2 rounded text-gray-600 hover:bg-gray-50 transition">Sign In</a>
+                        <button class="bg-primary text-white px-4 py-2 rounded-md font-semibold shadow hover:bg-secondary transition w-full">
+                            Get Started Free
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        {/if}
     </header>
 
 
@@ -113,7 +142,7 @@
         </div>
     </div>
 
-    <div class="p-4 my-16">
+    <div id="whytaskflow" class="p-4 my-16">
         <div class="flex flex-col items-center text-center mb-8">
             <span class="inline-block bg-green-100 text-green-600 font-medium px-3 py-1 rounded-full mb-4">
                 <i class='bx bxs-bolt align-middle mr-1'></i>
@@ -190,7 +219,7 @@
         </div>
     </div>
 
-    <div class="p-4 my-16">
+    <div id="howitworks" class="p-4 my-16">
         <div class="flex flex-col items-center text-center mb-8">
             <span class="bg-green-100 text-green-600 flex items-center font-medium gap-2 px-3 py-1 rounded-full mb-4">
                 <i class='bx bx-bullseye'></i>
