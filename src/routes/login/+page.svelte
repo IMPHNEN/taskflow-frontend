@@ -127,15 +127,6 @@
 
 			<button
 				type="button" 
-				class="w-full py-3 px-4 bg-white border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors text-base flex items-center justify-center gap-2"
-                disabled={githubLoading}
-			>
-				<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5" />
-				Login with Google
-			</button>
-
-			<button
-				type="button" 
 				class="w-full py-3 px-4 mt-4 bg-black/90 border font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-white"
                 on:click={handleGitHubLogin}
                 disabled={githubLoading}
