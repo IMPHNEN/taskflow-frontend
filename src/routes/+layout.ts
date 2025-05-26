@@ -4,8 +4,8 @@ import { AuthService } from '$lib/service';
 import type { LayoutLoad } from './$types';
 
 export const load: LayoutLoad = async ({ url }) => {
-  // Skip auth check for login, register, and auth-callback pages
-  if (url.pathname.includes('login') || url.pathname.includes('register') || url.pathname.includes('auth/callback')) {
+  // Skip auth check for login, register, and auth-callback pages and landing page
+  if (url.pathname.includes('login') || url.pathname.includes('register') || url.pathname.includes('/') || url.pathname.includes('auth/callback')) {
     return {};
   }
 

@@ -1,272 +1,429 @@
-<script lang="ts">
-    import ProjectCard from '$lib/components/Project/Card.svelte';
-    import { ucfirst } from '$lib/utils/transform';
-    import { onMount } from 'svelte';
-    import { projectStore, taskStore } from '$lib/stores';
-    import { fetchProjects, loadAllTasks, processTasksForChart, calculateOverdueProjects } from '$lib/actions';
-    import type { Project, Task } from '$lib/types';
-    import { ProjectStatus, TaskStatus } from '$lib/types';
-    import { format, formatDistanceToNow } from 'date-fns';
+<div class="font-inter">
+    <header class="sticky top-0 left-0 bg-white shadow-xs z-50">
+        <nav class="flex justify-between items-center p-4">
+            <a href="/" class="text-2xl font-bold">
+                <p class="font-bold text-primary">TaskFlow</p>
+            </a>
+            <ul class="flex gap-8 text-gray-600 font-medium">
+                <li><a href="#">Features</a></li>
+                <li><a href="#">How It Works</a></li>
+                <li><a href="#">Pricing</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+            <div class="flex gap-8 items-center font-medium text-sm">
+                <a href="/register" class="text-gray-600">
+                    Sign In
+                </a>
+                <button class="bg-primary text-white px-6 py-3 rounded-md">
+                    Get Started Free
+                </button>
+            </div>
+        </nav>
+    </header>
 
-    // @ts-ignore
-    import { chart } from "svelte-apexcharts";
-    
-    let projects: Project[] = [];
-    let tasks: Task[] = [];
-    let loading = true;
-    let chartData = {
-        series: [{
-            name: 'Tasks',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        }, {
-            name: 'Completed',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        }],
-        chart: {
-            height: 350,
-            type: 'area'
-        },
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            curve: 'smooth'
-        },
-        xaxis: {
-            type: 'datetime',
-            categories: Array(10).fill(0).map((_, i) => {
-                const date = new Date();
-                date.setDate(date.getDate() - (9 - i));
-                return date.toISOString();
-            })
-        },
-        tooltip: {
-            x: {
-                format: 'MMM dd, yyyy'
-            },
-        },
-        colors: ['#f44336', '#2fcc71']
-    };
-    
-    // Subscribe to stores
-    const unsubscribeProject = projectStore.subscribe(state => {
-        projects = state.projects;
-        loading = state.isLoading;
-        
-        // Calculate overdue projects whenever projects change
-        if (projects.length > 0) {
-            overdueProjects = calculateOverdueProjects(projects);
-        }
-    });
-    
-    const unsubscribeTask = taskStore.subscribe(state => {
-        tasks = state.tasks;
-        
-        // Update chart data whenever tasks change
-        if (tasks.length > 0) {
-            const data = processTasksForChart(tasks);
-            chartData = {
-                ...chartData,
-                series: data.series,
-                xaxis: {
-                    ...chartData.xaxis,
-                    categories: data.categories
-                }
-            };
-        }
-    });
-    
-    onMount(() => {
-        // Start async work in IIFE
-        (async () => {
-            try {
-                // Fetch projects and tasks in parallel
-                await Promise.all([
-                    fetchProjects(),
-                    loadAllTasks()
-                ]);
-            } catch (err) {
-                console.error('Failed to fetch dashboard data:', err);
-            }
-        })();
-        
-        // Return cleanup function synchronously
-        return () => {
-            unsubscribeProject();
-            unsubscribeTask();
-        };
-    });
-    
-    // Calculate stats
-    $: totalProjects = projects.length;
-    $: inProgressProjects = projects.filter(p => p.status === ProjectStatus.IN_PROGRESS).length;
-    $: completedProjects = projects.filter(p => p.status === ProjectStatus.COMPLETED).length;
-    $: overdueProjects = calculateOverdueProjects(projects);
-    
-    // Format dates for display
-    function formatDate(dateString: string) {
-        return format(new Date(dateString), 'MMM dd, yyyy');
-    }
-    
-    function formatTimeAgo(dateString: string) {
-        return formatDistanceToNow(new Date(dateString), { addSuffix: true });
-    }
-</script>
 
-<svelte:head>
-    <title>Dashboard</title>
-</svelte:head>
-
-<div class="flex flex-col gap-4">
-    <!-- Statistics Dashboard -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white p-6 rounded-lg shadow-sm">
-            <div class="flex items-center justify-between">
+    <div class="flex flex-col md:flex-row items-center justify-between py-16 px-6 md:px-20 bg-gradient-to-br from-green-50 via-white to-green-50">
+        <div class="flex-1 max-w-xl">
+            <div class="mb-4 text-[#29AB59] bg-primary/10 px-4 py-2 flex items-center gap-2 w-max rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-4 h-4 mr-2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>
+                <span class="font-medium">AI-Powered Project Management</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black leading-tight mb-4 text-[#111827]">
+                Empower Your <span class="text-primary">Solo Journey</span>
+            </h1>
+            <p class="text-gray-600 text-lg mb-8">
+                Streamlined project management tool tailored for solo-preneurs. Plan, track, and execute projects efficiently with intelligent, data-driven insights.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 mb-10">
+                <button class="bg-primary text-white px-6 py-3 rounded-md font-semibold shadow hover:bg-secondary transition">
+                    Start Your Free Trial
+                    <span class="ml-2">→</span>
+                </button>
+                <a href="#" class="flex items-center justify-center px-6 py-3 border border-gray-200 rounded-md text-primary font-semibold bg-white hover:bg-gray-50 transition">
+                    Watch Demo
+                    <i class='bx bx-play text-2xl'></i>
+                </a>
+            </div>
+            <div class="flex gap-8 text-gray-700 text-sm font-medium">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Projects</p>
-                    <h3 class="text-2xl font-bold mt-2">{totalProjects}</h3>
+                    <span class="text-xl font-bold block">10k+</span>
+                    Active Users
                 </div>
-                <div class="flex itms-center bg-blue-100 p-3 rounded-full">
-                    <i class="bx bx-folder text-blue-600 text-xl"></i>
-                </div>
-            </div>
-            <div class="flex items-center gap-1 mt-4 text-green-600 text-sm">
-                <i class="bx bx-up-arrow-alt"></i>
-                <span>Projects created</span>
-            </div>
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow-sm">
-            <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">In Progress</p>
-                    <h3 class="text-2xl font-bold mt-2">{inProgressProjects}</h3>
+                    <span class="text-xl font-bold block">95%</span>
+                    Success Rate
                 </div>
-                <div class="flex itms-center bg-yellow-100 p-3 rounded-full">
-                    <i class="bx bx-loader text-yellow-600 text-xl"></i>
-                </div>
-            </div>
-            <div class="flex items-center gap-1 mt-4 text-gray-700 text-sm">
-                <i class="bx bx-info-circle"></i>
-                <span>Active projects</span>
-            </div>
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow-sm">
-            <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Completed</p>
-                    <h3 class="text-2xl font-bold mt-2">{completedProjects}</h3>
+                    <span class="text-xl font-bold block">24/7</span>
+                    AI Support
                 </div>
-                <div class="flex itms-center bg-green-100 p-3 rounded-full">
-                    <i class="bx bx-check-circle text-green-600 text-xl"></i>
-                </div>
-            </div>
-            <div class="flex items-center gap-1 mt-4 text-green-600 text-sm">
-                <i class="bx bx-badge-check"></i>
-                <span>Finished projects</span>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-500 text-sm">Overdue</p>
-                    <h3 class="text-2xl font-bold mt-2">{overdueProjects}</h3>
+        <div class="flex-1 flex justify-center mt-12 md:mt-0 shadow-lg rounded-2xl">
+            <div class="bg-white rounded-2xl shadow-lg p-6 w-full border border-gray-100" style="box-shadow:0 2px 16px 0 rgba(44,62,80,0.06);">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="font-semibold text-gray-800 text-lg">Project Dashboard</h2>
+                    <div class="flex gap-1">
+                        <span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span>
+                        <span class="w-2 h-2 rounded-full bg-yellow-400 inline-block"></span>
+                        <span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span>
+                    </div>
                 </div>
-                <div class="flex itms-center bg-red-100 p-3 rounded-full">
-                    <i class="bx bx-time text-gray-700 text-xl"></i>
-                </div>
-            </div>
-            <div class="flex items-center gap-1 mt-4 text-gray-700 text-sm">
-                <i class="bx bx-calendar-exclamation"></i>
-                <span>Past deadline</span>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="w-full grid grid-cols-3 grid-rows-2 gap-4 min-h-96">
-
-        <div class="bg-white shadow-sm col-span-2 p-4" use:chart={chartData}>
-        </div>
-
-        <div class="bg-white shadow-sm rounded-md row-span-2">
-            <h1 class="m-4 text-xl font-medium">Activities</h1>
-            {#if loading}
-                <div class="flex justify-center items-center py-12">
-                    <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
-                </div>
-            {:else if tasks.length === 0}
-                <div class="flex flex-col items-center justify-center py-12 text-center">
-                    <i class="bx bx-task text-gray-400 text-4xl mb-2"></i>
-                    <p class="text-gray-500">No tasks yet</p>
-                </div>
-            {:else}
-                <div class="flex flex-col mt-4">
-                    {#each tasks as task}
-                        <div class="flex items-center gap-3 hover:bg-black/5 p-3 transition-colors">
-                            <div class="flex items-center
-                                {task.status === TaskStatus.TODO ? 'bg-blue-100' : 
-                                task.status === TaskStatus.IN_PROGRESS ? 'bg-yellow-100' : 
-                                'bg-green-100'} p-2 rounded-full">
-                                <i class="bx 
-                                    {task.status === TaskStatus.TODO ? 'bx-list-ul text-blue-600' : 
-                                    task.status === TaskStatus.IN_PROGRESS ? 'bx-loader text-yellow-600' : 
-                                    'bx-check-double text-green-600'}">
-                                </i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    <p class="text-sm">{task.title}</p>
-                                    <span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full text-xs">
-                                        {task.project_name || 'Unknown project'}
-                                    </span>
-                                </div>
-                                <p class="text-xs text-gray-500">{formatTimeAgo(task.created_at)}</p>
-                            </div>
+                <div class="flex gap-4 mb-4">
+                    <div class="flex-1 flex items-center gap-3 bg-green-50 rounded-xl px-4 py-3">
+                        <span class="bg-primary rounded-lg p-2 flex items-center justify-center shadow" style="box-shadow:0 1px 4px 0 rgba(44,62,80,0.06);">
+                            <i class='bx bx-bullseye text-2xl text-white'></i>
+                        </span>
+                        <div>
+                            <div class="text-xs text-gray-500 font-medium">Active Projects</div>
+                            <div class="text-2xl font-bold text-primary leading-tight">12</div>
                         </div>
-                    {/each}
+                    </div>
+                    <div class="flex-1 flex items-center gap-3 bg-green-50 rounded-xl px-4 py-3">
+                        <span class="bg-primary rounded-lg p-2 flex items-center justify-center shadow" style="box-shadow:0 1px 4px 0 rgba(44,62,80,0.06);">
+                            <i class='bx bxs-bolt text-2xl text-white'></i>
+                        </span>
+                        <div>
+                            <div class="text-xs text-gray-500 font-medium">Completed</div>
+                            <div class="text-2xl font-bold text-primary leading-tight">89</div>
+                        </div>
+                    </div>
                 </div>
-            {/if}
-        </div>
-
-        <div class="col-span-2 bg-white shadow-sm rounded-md">
-            <div class="flex items-center justify-between m-4">
-                <h1 class="text-xl font-medium">Recent Projects</h1>
-                <a href="/projects" class="text-primary hover:underline text-sm">View All</a>
-            </div>
-            <div class="grid grid-cols-2 gap-4 p-4">
-                {#if loading}
-                    <div class="col-span-2 flex justify-center items-center py-12">
-                        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+                <div class="mb-4">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-xs text-gray-500">Weekly Progress</span>
+                        <span class="text-xs text-primary font-semibold">78%</span>
                     </div>
-                {:else if projects.length === 0}
-                    <div class="col-span-2 flex flex-col items-center justify-center py-12 text-center">
-                        <i class="bx bx-folder-open text-gray-400 text-4xl mb-2"></i>
-                        <p class="text-gray-500">No projects yet</p>
-                        <a href="/projects" class="text-primary hover:underline mt-2">Create your first project</a>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full transition-all duration-500" style="width: 78%"></div>
                     </div>
-                {:else}
-                    {#each projects.slice(0, 4) as project}
-                        <a href="/projects/{project.id}" class="flex flex-col p-4 border border-gray-100 rounded-lg hover:border-primary hover:shadow-sm transition-all">
-                            <h3 class="font-medium">{project.name}</h3>
-                            <p class="text-xs text-gray-500 line-clamp-2 mt-1">{project.description}</p>
-                            <div class="flex items-center gap-2 mt-3">
-                                <span class="px-2 py-0.5 rounded-full text-xs 
-                                    {project.status === ProjectStatus.IN_PROGRESS ? 'bg-yellow-100 text-yellow-800' : 
-                                    project.status === ProjectStatus.COMPLETED ? 'bg-green-100 text-green-800' : 
-                                    project.status === ProjectStatus.ON_HOLD ? 'bg-orange-100 text-orange-800' : 
-                                    project.status === ProjectStatus.CANCELLED ? 'bg-red-100 text-red-800' : 
-                                    'bg-blue-100 text-blue-800'}">
-                                    {project.status || ProjectStatus.PLANNING}
-                                </span>
-                                <span class="text-xs text-gray-500">{formatDate(project.created_at)}</span>
-                            </div>
-                        </a>
-                    {/each}
-                {/if}
+                </div>
+                <div class="relative bg-blue-50 rounded-xl p-4 overflow-hidden flex items-start gap-3 border border-blue-100">
+                    <div class="absolute top-0 -left-1 w-2 h-full bg-[#64A7FA]"></div>
+                    <div class="flex items-start gap-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#64A7FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-1.5 lucide lucide-sparkles w-4 h-4"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>
+                        <div>
+                            <span class="text-sm text-gray-700 font-semibold">AI Insight</span>
+                            <p class="text-xs text-gray-500 mt-1">You're 23% ahead of schedule! Consider taking on a new project.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <div class="p-4 my-16">
+        <div class="flex flex-col items-center text-center mb-8">
+            <span class="inline-block bg-green-100 text-green-600 font-medium px-3 py-1 rounded-full mb-4">
+                <i class='bx bxs-bolt align-middle mr-1'></i>
+                Powerful Features
+            </span>
+            <h2 class="text-3xl md:text-5xl font-extrabold leading-tight mb-2 text-[#111827]">
+                Everything you need to <br><span class="text-primary">succeed solo</span>
+            </h2>
+            <p class="text-gray-500 max-w-xl mx-auto text-sm md:text-base">
+                TaskFlow combines intelligent automation with intuitive design to give solo entrepreneurs the power of an entire project management team.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <!-- Card 1: AI Project Scope Generation -->
+            <div class="bg-white rounded-xl shadow p-6 border border-gray-100 flex flex-col gap-2 hover:shadow-lg hover:-translate-y-2 transition">
+                <span class="bg-green-100 p-2 rounded-lg w-fit mb-2">
+                    <i class='bx bx-brain text-2xl text-green-500'></i>
+                </span>
+                <div class="font-semibold text-green-600">AI Project Scope Generation</div>
+                <div class="text-xs text-gray-500">
+                    Let AI analyze your ideas and generate comprehensive project scopes with timelines, milestones, and resource requirements.
+                </div>
+            </div>
+            <!-- Card 2: Automated Repository Setup -->
+            <div class="bg-white rounded-xl shadow p-6 border border-gray-100 flex flex-col gap-2 hover:shadow-lg hover:-translate-y-2 transition">
+                <span class="bg-green-100 p-2 rounded-lg w-fit mb-2">
+                    <i class='bx bx-git-repo-forked text-2xl text-teal-500'></i>
+                </span>
+                <div class="font-semibold text-teal-600">Automated Repository Setup</div>
+                <div class="text-xs text-gray-500">
+                    Instantly create and configure development repositories with best practices, templates, and CI/CD pipelines.
+                </div>
+            </div>
+            <!-- Card 3: Visual Project Previews -->
+            <div class="bg-white rounded-xl shadow p-6 border border-gray-100 flex flex-col gap-2 hover:shadow-lg hover:-translate-y-2 transition">
+                <span class="bg-blue-100 p-2 rounded-lg w-fit mb-2">
+                    <i class='bx bx-show-alt text-2xl text-blue-500'></i>
+                </span>
+                <div class="font-semibold text-blue-600">Visual Project Previews</div>
+                <div class="text-xs text-gray-500">
+                    Get instant visual mockups and previews of your projects before you start development, saving time and resources.
+                </div>
+            </div>
+            <!-- Card 4: Market Fit Validation -->
+            <div class="bg-white rounded-xl shadow p-6 border border-gray-100 flex flex-col gap-2 hover:shadow-lg hover:-translate-y-2 transition">
+                <span class="bg-green-100 p-2 rounded-lg w-fit mb-2">
+                    <i class='bx bx-bar-chart-alt-2 text-2xl text-green-500'></i>
+                </span>
+                <div class="font-semibold text-green-600">Market Fit Validation</div>
+                <div class="text-xs text-gray-500">
+                    AI-powered market analysis and validation tools to ensure your projects have the best chance of success.
+                </div>
+            </div>
+            <!-- Card 5: Advanced Analytics -->
+            <div class="bg-white rounded-xl shadow p-6 border border-gray-100 flex flex-col gap-2 hover:shadow-lg hover:-translate-y-2 transition">
+                <span class="bg-teal-100 p-2 rounded-lg w-fit mb-2">
+                    <i class='bx bx-line-chart text-2xl text-teal-500'></i>
+                </span>
+                <div class="font-semibold text-teal-600">Advanced Analytics</div>
+                <div class="text-xs text-gray-500">
+                    Deep insights into your project performance, productivity patterns, and success metrics with beautiful dashboards.
+                </div>
+            </div>
+            <!-- Card 6: Smart Automation -->
+            <div class="bg-white rounded-xl shadow p-6 border border-gray-100 flex flex-col gap-2 hover:shadow-lg hover:-translate-y-2 transition">
+                <span class="bg-blue-100 p-2 rounded-lg w-fit mb-2">
+                    <i class='bx bx-cog text-2xl text-blue-500'></i>
+                </span>
+                <div class="font-semibold text-blue-600">Smart Automation</div>
+                <div class="text-xs text-gray-500">
+                    Automate repetitive tasks, notifications, and workflows to focus on what matters most - building your vision.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-4 my-16">
+        <div class="flex flex-col items-center text-center mb-8">
+            <span class="bg-green-100 text-green-600 flex items-center font-medium gap-2 px-3 py-1 rounded-full mb-4">
+                <i class='bx bx-bullseye'></i>
+                Visual Project Management
+            </span>
+            <h2 class="text-3xl md:text-5xl font-extrabold leading-tight mb-2 text-[#111827]">
+                See your progress <br><span class="text-primary">at glance</span>
+            </h2>
+            <p class="text-gray-500 max-w-xl mx-auto text-sm md:text-base">
+                Organize your projects with our intuitive Kanban boards. Track progress, manage deadlines, and stay focused on what matters most.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
+            <!-- To Do Column -->
+            <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 flex flex-col min-h-[350px]">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="font-semibold text-gray-700">To Do</span>
+                    <span class="bg-gray-200 text-xs px-2 py-0.5 rounded">3</span>
+                </div>
+                <div class="flex flex-col gap-3 flex-1">
+                    <!-- Task 1 -->
+                    <div class="bg-white rounded-lg p-3 shadow border border-gray-100 flex flex-col gap-1 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/35 cursor-pointer transition">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-800">Design landing page mockups</span>
+                            <span class="bg-red-100 text-red-500 text-xs px-2 py-0.5 rounded">High</span>
+                        </div>
+                        <div class="text-xs text-gray-500">Create wireframes and high-fidelity designs</div>
+                        <div class="flex items-center gap-3 mt-2 text-[10px] text-gray-400">
+                            <span>Mar 19</span>
+                            <span>•</span>
+                            <span><i class='bx bx-message'></i> 3</span>
+                            <span><i class='bx bx-user'></i> 2</span>
+                        </div>
+                    </div>
+                    <!-- Task 2 -->
+                    <div class="bg-white rounded-lg p-3 shadow border border-gray-100 flex flex-col gap-1 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/35 cursor-pointer transition">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-800">Research competitor pricing</span>
+                            <span class="bg-yellow-100 text-yellow-600 text-xs px-2 py-0.5 rounded">Medium</span>
+                        </div>
+                        <div class="text-xs text-gray-500">Analyze market pricing strategies</div>
+                        <div class="flex items-center gap-3 mt-2 text-[10px] text-gray-400">
+                            <span>Mar 20</span>
+                            <span>•</span>
+                            <span><i class='bx bx-message'></i> 1</span>
+                            <span><i class='bx bx-user'></i> 1</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="mt-3 text-xs text-gray-400 hover:text-primary transition flex items-center gap-1">
+                    <i class='bx bx-plus'></i> Add task
+                </button>
+            </div>
+            <!-- In Progress Column -->
+            <div class="bg-green-50 rounded-xl border border-green-100 p-4 flex flex-col min-h-[350px]">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="font-semibold text-green-700">In Progress</span>
+                    <span class="bg-green-200 text-xs px-2 py-0.5 rounded">1</span>
+                </div>
+                <div class="flex flex-col gap-3 flex-1">
+                    <!-- Task 1 -->
+                    <div class="bg-white rounded-lg p-3 shadow border border-gray-100 flex flex-col gap-1 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/35 cursor-pointer transition">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-800">Implement user authentication</span>
+                            <span class="bg-red-100 text-red-500 text-xs px-2 py-0.5 rounded">High</span>
+                        </div>
+                        <div class="text-xs text-gray-500">Set up OAuth and session management</div>
+                        <div class="flex items-center gap-3 mt-2 text-[10px] text-gray-400">
+                            <span>Mar 20</span>
+                            <span>•</span>
+                            <span><i class='bx bx-message'></i> 2</span>
+                            <span><i class='bx bx-user'></i> 1</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="mt-3 text-xs text-gray-400 hover:text-primary transition flex items-center gap-1">
+                    <i class='bx bx-plus'></i> Add task
+                </button>
+            </div>
+            <!-- Review Column -->
+            <div class="bg-teal-50 rounded-xl border border-teal-100 p-4 flex flex-col min-h-[350px]">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="font-semibold text-teal-700">Review</span>
+                    <span class="bg-teal-200 text-xs px-2 py-0.5 rounded">1</span>
+                </div>
+                <div class="flex flex-col gap-3 flex-1">
+                    <!-- Task 1 -->
+                    <div class="bg-white rounded-lg p-3 shadow border border-gray-100 flex flex-col gap-1 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/35 cursor-pointer transition">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-800">API documentation</span>
+                            <span class="bg-yellow-100 text-yellow-600 text-xs px-2 py-0.5 rounded">Medium</span>
+                        </div>
+                        <div class="text-xs text-gray-500">Complete technical documentation</div>
+                        <div class="flex items-center gap-3 mt-2 text-[10px] text-gray-400">
+                            <span>Mar 21</span>
+                            <span>•</span>
+                            <span><i class='bx bx-message'></i> 0</span>
+                            <span><i class='bx bx-user'></i> 1</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="mt-3 text-xs text-gray-400 hover:text-primary transition flex items-center gap-1">
+                    <i class='bx bx-plus'></i> Add task
+                </button>
+            </div>
+            <!-- Done Column -->
+            <div class="bg-teal-50 rounded-xl border border-teal-100 p-4 flex flex-col min-h-[350px]">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="font-semibold text-teal-700">Done</span>
+                    <span class="bg-teal-200 text-xs px-2 py-0.5 rounded">1</span>
+                </div>
+                <div class="flex flex-col gap-3 flex-1">
+                    <!-- Task 1 -->
+                    <div class="bg-white rounded-lg p-3 shadow border border-gray-100 flex flex-col gap-1 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/35 cursor-pointer transition">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-800 line-through">Auth Page</span>
+                            <span class="bg-yellow-100 text-yellow-600 text-xs px-2 py-0.5 rounded">Medium</span>
+                        </div>
+                        <div class="text-xs text-gray-500">Complete technical documentation</div>
+                        <div class="flex items-center gap-3 mt-2 text-[10px] text-gray-400">
+                            <span>Mar 20</span>
+                            <span>•</span>
+                            <span><i class='bx bx-message'></i> 0</span>
+                            <span><i class='bx bx-user'></i> 1</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="mt-3 text-xs text-gray-400 hover:text-primary transition flex items-center gap-1">
+                    <i class='bx bx-plus'></i> Add task
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class=" flex flex-col items-center justify-center bg-gradient-to-br from-primary to-[#0F9984] py-16 px-4 text-center shadow-lg">
+        <div class="mb-3">
+            <span class="flex items-center gap-1 bg-[#53D485] text-white text-xs px-4 py-2 rounded-full font-medium tracking-wide shadow-sm backdrop-blur-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-4 h-4 mr-2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>
+                Ready to Transform Your Workflow?
+            </span>
+        </div>
+        <h1 class="text-3xl md:text-5xl max-w-xl font-extrabold text-white mb-2 leading-tight">
+            Join thousands of solo entrepreneurs
+            building better projects
+        </h1>
+        <p class="text-white/80 text-base md:text-lg mb-6 max-w-xl mx-auto">
+            Stop juggling multiple tools and start focusing on what you do best.<br>
+            TaskFlow brings everything together in one intelligent platform.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 mb-7 text-white/90 text-sm">
+            <div class="flex items-center gap-2">
+                <i class='bx bx-check-circle text-green-200'></i>
+                Start with 14-day free trial
+            </div>
+            <div class="flex items-center gap-2">
+                <i class='bx bx-credit-card-front text-green-200'></i>
+                No credit card required
+            </div>
+            <div class="flex items-center gap-2">
+                <i class='bx bx-refresh text-green-200'></i>
+                Cancel anytime
+            </div>
+            <div class="flex items-center gap-2">
+                <i class='bx bx-lock-open text-green-200'></i>
+                Full feature access
+            </div>
+        </div>
+        <button class="bg-white text-green-600 font-semibold px-6 py-3 rounded-lg shadow hover:bg-green-50 transition w-full sm:w-auto">
+            Start Your Free Trial
+        </button>
+    </div>
+
+    <footer class="bg-[#181F2A] text-gray-300 pt-12 pb-6 px-4 md:px-16 mt-0">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:justify-between gap-10">
+            <!-- Brand & Description -->
+            <div class="flex-1 min-w-[220px] mb-8 md:mb-0">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="bg-green-500 text-white font-bold rounded-full w-9 h-9 flex items-center justify-center text-xl">T</span>
+                    <span class="text-xl font-bold text-white">TaskFlow</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-4 max-w-xs">
+                    Empowering solo entrepreneurs with intelligent project management tools. Build better, move faster, and achieve more with TaskFlow.
+                </p>
+                <div class="flex gap-3 mt-2">
+                    <a href="#" class="hover:text-primary transition"><i class='bx bxl-twitter text-xl'></i></a>
+                    <a href="#" class="hover:text-primary transition"><i class='bx bxl-facebook text-xl'></i></a>
+                    <a href="#" class="hover:text-primary transition"><i class='bx bxl-linkedin text-xl'></i></a>
+                    <a href="#" class="hover:text-primary transition"><i class='bx bxl-instagram text-xl'></i></a>
+                </div>
+            </div>
+            <!-- Links -->
+            <div class="flex flex-[2] flex-wrap gap-10 md:gap-20">
+                <div>
+                    <div class="font-semibold text-white mb-3">Product</div>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition">Features</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Pricing</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Integrations</a></li>
+                        <li><a href="#" class="hover:text-primary transition">API</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Changelog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="font-semibold text-white mb-3">Company</div>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition">About</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Blog</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Careers</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Contact</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Press</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="font-semibold text-white mb-3">Resources</div>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition">Documentation</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Help Center</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Community</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Templates</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Tutorials</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="font-semibold text-white mb-3">Legal</div>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Cookie Policy</a></li>
+                        <li><a href="#" class="hover:text-primary transition">GDPR</a></li>
+                    </ul>
+                </div>
+            </div>
+         </div>
+    </footer>
 </div>

@@ -18,14 +18,14 @@
 	}
 </script>
 
-{#if !page.url.pathname.includes('login') && !page.url.pathname.includes('register')}
+{#if !['/login', '/register', '/'].includes(page.url.pathname)}
 <div class="flex max-h-dvh overflow-hidden">
 	<div class="w-64 h-dvh border border-r border-gray-200 bg-white px-4 py-6">
 		<div class="flex items-center gap-2 mb-8">
 			<h1 class="font-semibold text-xl">TaskFlow</h1>
 		</div>
 		<nav class="flex flex-col gap-1">
-			<a href='/' class="nav-link {page.url.pathname === '/' ? 'active' : ''}">
+			<a href='/dashboard' class="nav-link {page.url.pathname === '/dashboard' ? 'active' : ''}">
 				<i class='bx bx-grid-alt'></i>
 				<span class="font-medium">Dashboard</span>
 			</a>
