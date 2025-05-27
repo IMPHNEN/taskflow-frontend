@@ -52,27 +52,27 @@
 
     <div class="flex flex-col md:flex-row items-center justify-between py-16 px-6 md:px-20 bg-gradient-to-br from-green-50 via-white to-green-50">
         <div class="flex-1 max-w-xl">
-            <div class="mb-4 text-[#29AB59] bg-primary/10 px-4 py-2 flex items-center gap-2 w-max rounded-full">
+            <div class="mb-4 text-[#29AB59] bg-primary/10 px-4 py-2 flex items-center max-sm:w-full max-sm:justify-center gap-2 w-max rounded-full">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-4 h-4 mr-2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>
                 <span class="font-medium">AI-Powered Project Management</span>
             </div>
-            <h1 class="text-4xl md:text-5xl font-black leading-tight mb-4 text-[#111827]">
-                Empower Your <span class="text-primary">Solo Journey</span>
+            <h1 class="text-4xl md:text-5xl max-sm:text-center font-black leading-tight mb-4 text-[#111827]">
+                Empower Your <br> <span class="text-primary">Solo Journey</span>
             </h1>
-            <p class="text-gray-600 text-lg mb-8">
+            <p class="text-gray-600 max-sm:text-center text-lg mb-8">
                 Streamlined project management tool tailored for solo-preneurs. Plan, track, and execute projects efficiently with intelligent, data-driven insights.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 mb-10">
-                <a href="/register" class="bg-primary text-white px-6 py-3 rounded-md font-semibold shadow hover:bg-secondary transition">
+                <a href="/register" class="bg-primary text-white flex items-center justify-center gap-2 px-6 py-3 rounded-md font-semibold shadow hover:bg-secondary transition">
                     Start Your Free Trial
-                    <span class="ml-2">→</span>
+                    <i class="bx bx-chevron-right text-3xl"></i>
                 </a>
                 <a href="#" class="flex items-center justify-center px-6 py-3 border border-gray-200 rounded-md text-primary font-semibold bg-white hover:bg-gray-50 transition">
                     Watch Demo
                     <i class='bx bx-play text-2xl'></i>
                 </a>
             </div>
-            <div class="flex gap-8 text-gray-700 text-sm font-medium">
+            <div class="flex gap-8 max-sm:justify-center text-gray-700 text-sm font-medium">
                 <div>
                     <span class="text-xl font-bold block">10k+</span>
                     Active Users
@@ -338,7 +338,7 @@
                             <span class="font-medium text-gray-800 line-through">Auth Page</span>
                             <span class="bg-yellow-100 text-yellow-600 text-xs px-2 py-0.5 rounded">Medium</span>
                         </div>
-                        <div class="text-xs text-gray-500">Complete technical documentation</div>
+                        <div class="text-xs text-gray-500">Setup the auth page for user</div>
                         <div class="flex items-center gap-3 mt-2 text-[10px] text-gray-400">
                             <span>Mar 20</span>
                             <span>•</span>
