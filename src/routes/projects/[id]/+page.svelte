@@ -349,20 +349,18 @@ Targeting these areas promises competitive differentiation, strong user adoption
         </div>
     </div>
     
-    <div class="flex flex-col gap-4 bg-white p-4 rounded-lg shadow">
+    <div class="flex flex-col gap-4 bg-white p-4 rounded-lg shadow relative z-0">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <i class="bx bx-desktop text-xl text-primary"></i>
                 <h2 class="font-medium">Mockup Project</h2>
             </div>
-            <button class="disabled:opacity-50 bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition-all">
+            <button disabled class="disabled:opacity-50 disabled:cursor-auto bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition-all">
                 Gave Some Preview
             </button>
         </div>
-    
-        <div>
-            <img src="https://placehold.co/1440x720" alt="" class="rounded-md">
-        </div>
+   
+        <h3 class="text-3xl text-center">Incoming...</h3>
     </div>
     
     <h1 class="text-3xl font-semibold text-gray-800">Kanban Board</h1>
