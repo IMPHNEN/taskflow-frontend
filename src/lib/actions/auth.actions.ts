@@ -43,7 +43,7 @@ export async function login(email: string, password: string) {
     }
     
     // Redirect to dashboard
-    goto('/');
+    goto('/dashboard');
     return { success: true };
   } catch (error) {
     console.error('Error logging in:', error);
@@ -77,7 +77,7 @@ export async function register(email: string, password: string, fullName: string
     }
     
     // Redirect to dashboard
-    goto('/');
+    goto('/dashboard');
     return { success: true };
   } catch (error) {
     console.error('Error registering:', error);
@@ -132,7 +132,7 @@ export async function handleGitHubCallback(code: string) {
     }
     
     // Redirect to dashboard
-    goto('/');
+    goto('/dashboard');
   } catch (error) {
     console.error('Error exchanging GitHub code:', error);
     authStore.setError('Failed to authenticate with GitHub');
