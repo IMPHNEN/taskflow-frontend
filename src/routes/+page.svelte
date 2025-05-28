@@ -5,8 +5,11 @@
         navOpen = !navOpen;
     }
 </script>
-<div class="font-inter">
 
+<svelte:head>
+    <title>TaskFlow - AI-Powered Project Management</title>
+</svelte:head>
+<div class="font-inter">
     <header class="sticky top-0 left-0 bg-white shadow-xs z-50">
         <nav class="flex justify-between items-center p-4">
             <a href="/" class="text-2xl font-bold">
@@ -50,7 +53,7 @@
     </header>
 
 
-    <div class="flex flex-col md:flex-row items-center justify-between py-16 px-6 md:px-20 bg-gradient-to-br from-green-50 via-white to-green-50">
+    <div class="flex flex-col md:flex-row items-center justify-between py-16 px-6 lg:px-20 md:gap-4 bg-gradient-to-br from-green-50 via-white to-green-50">
         <div class="flex-1 max-w-xl">
             <div class="mb-4 text-[#29AB59] bg-primary/10 px-4 py-2 flex items-center max-sm:w-full max-sm:justify-center gap-2 w-max rounded-full">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-4 h-4 mr-2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>
@@ -237,7 +240,7 @@
             <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 flex flex-col min-h-[350px]">
                 <div class="flex items-center justify-between mb-4">
                     <span class="font-semibold text-gray-700">To Do</span>
-                    <span class="bg-gray-200 text-xs px-2 py-0.5 rounded">3</span>
+                    <span class="bg-gray-200 text-xs px-2 py-0.5 rounded">2</span>
                 </div>
                 <div class="flex flex-col gap-3 flex-1">
                     <!-- Task 1 -->
