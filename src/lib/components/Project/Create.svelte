@@ -6,7 +6,7 @@
     export let close: () => void;
     
     let projectName = '';
-    let description = '';
+    let objective = '';
     let industry = '';
     let estimatedIncome = '';
     let estimatedOutcome = '';
@@ -40,7 +40,7 @@
         try {
             const projectData: ProjectCreate = {
                 name: projectName.trim(),
-                description: description.trim(),
+                objective: objective.trim(),
                 industry: industry.trim() || null,
                 estimated_income: estimatedIncome ? Number(estimatedIncome) : null,
                 estimated_outcome: estimatedOutcome ? Number(estimatedOutcome) : null,
@@ -112,12 +112,12 @@
             </div>
     
             <div class="flex flex-col gap-2 col-span-2">
-                <label for="project-description" class="text-gray-500 text-sm">Description</label>
+                <label for="project-objective" class="text-gray-500 text-sm">Objective</label>
                 <textarea
-                    id="project-description"
-                    bind:value={description}
+                    id="project-objective"
+                    bind:value={objective}
                     class="border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-primary"
-                    placeholder="Enter project description"
+                    placeholder="Enter project objective"
                     rows="3"
                 ></textarea>
             </div>
@@ -134,22 +134,22 @@
             </div>
     
             <div class="flex flex-col gap-2">
-                <label for="project-income" class="text-gray-500 text-sm">Estimated Income</label>
-                <input 
-                    id="project-income"
-                    type="number"
-                    bind:value={estimatedIncome}
-                    class="border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-primary"
-                    placeholder="$0"
-                />
-            </div>
-    
-            <div class="flex flex-col gap-2">
                 <label for="project-outcome" class="text-gray-500 text-sm">Estimated Outcome</label>
                 <input 
                     id="project-outcome"
                     type="number"
                     bind:value={estimatedOutcome}
+                    class="border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-primary"
+                    placeholder="$0"
+                />
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label for="project-income" class="text-gray-500 text-sm">Estimated Income</label>
+                <input 
+                    id="project-income"
+                    type="number"
+                    bind:value={estimatedIncome}
                     class="border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-primary"
                     placeholder="$0"
                 />

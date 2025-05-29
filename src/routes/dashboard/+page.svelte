@@ -251,7 +251,7 @@
                     {#each projects.slice(0, 4) as project}
                         <a href="/projects/{project.id}" class="flex flex-col p-4 border border-gray-100 rounded-lg hover:border-primary hover:shadow-sm transition-all">
                             <h3 class="font-medium">{project.name}</h3>
-                            <p class="text-xs text-gray-500 line-clamp-2 mt-1">{project.description}</p>
+                            <p class="text-xs text-gray-500 line-clamp-2 mt-1">{project.objective}</p>
                             <div class="flex items-center gap-2 mt-3">
                                 <span class="px-2 py-0.5 rounded-full text-xs 
                                     {project.status === ProjectStatus.IN_PROGRESS ? 'bg-yellow-100 text-yellow-800' : 

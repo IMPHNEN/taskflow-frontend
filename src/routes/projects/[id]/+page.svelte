@@ -1,10 +1,16 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { page } from "$app/stores";
     import Sortable from 'sortablejs';
+    import { format } from 'date-fns';
+
 
     import Item from "$lib/components/Project/Kanban/Item.svelte";
     import Modal from "$lib/components/Project/Kanban/Modal.svelte";
     import Market from "$lib/components/Project/Market.svelte";
+    import { generateProjectScope, loadProject, setupRepository, validateMarketFit } from "$lib/actions";
+    import type { ProjectDetail } from "$lib/types";
+    import { projectStore } from "$lib/stores";
     
     const markdown = `
 # Market Validation Report: Project Management Tools
@@ -267,7 +273,29 @@ Targeting these areas promises competitive differentiation, strong user adoption
 
     let showModal = $state(false);
 
+    let project: ProjectDetail | null = null;
+    let loading = true;
+    let error = '';
+
+    // Subscribe to the project store
+    const unsubscribe = projectStore.subscribe(state => {
+        project = state.currentProject;
+        loading = state.isLoading;
+        error = state.error || '';
+    });
+
     onMount(() => {
+        (async () => {
+            try {
+                // Fetch projects and tasks in parallel
+                await Promise.all([
+                    loadProject($page.params.id),
+                ]);
+            } catch (err) {
+                console.error('Failed to fetch dashboard data:', err);
+            }
+        })();
+    
         const backlog = document.getElementById('backlog');
         const todo = document.getElementById('todo');
         const inProgress = document.getElementById('in-progress');
@@ -292,7 +320,14 @@ Targeting these areas promises competitive differentiation, strong user adoption
             group: 'shared',
             animation: 300
         });
+
+        return unsubscribe;
     });
+
+    function formatDate(dateString: string | null | undefined) {
+        if (!dateString) return '';
+        return format(new Date(dateString), 'MMM dd, yyyy');
+    }
 </script>
 
 <svelte:head>
@@ -320,32 +355,34 @@ Targeting these areas promises competitive differentiation, strong user adoption
         <div class="grid grid-cols-2 gap-6 text-sm">
             <div class="flex flex-col gap-2">
                 <span class="text-gray-500">Project Name</span>
-                <p class="font-medium">E-Commerce Website</p>
+                <p class="font-medium">{project?.name}</p>
             </div>
             <div class="flex flex-col gap-2">
                 <span class="text-gray-500">Objective</span>
-                <p>Build a modern e-commerce platform with seamless user experience</p>
-            </div>
-            <div class="flex flex-col gap-2">
-                <span class="text-gray-500">Estimated Income</span>
-                <p class="font-medium text-green-600">$50,000</p>
+                <p>{project?.objective}</p>
             </div>
             <div class="flex flex-col gap-2">
                 <span class="text-gray-500">Estimated Outcome</span>
-                <p class="font-medium text-red-600">$30,000</p>
+                <p class="font-medium text-red-600">${project?.estimated_outcome}</p>
+            </div>
+            <div class="flex flex-col gap-2">
+                <span class="text-gray-500">Estimated Income</span>
+                <p class="font-medium text-green-600">${project?.estimated_income}</p>
             </div>
             <div class="flex flex-col gap-2">
                 <span class="text-gray-500">Start Date</span>
-                <p>January 1, 2024</p>
+                <p>{formatDate(project?.start_date)}</p>
             </div>
             <div class="flex flex-col gap-2">
                 <span class="text-gray-500">End Date</span>
-                <p>March 31, 2024</p>
+                <p>{formatDate(project?.end_date)}</p>
             </div>
-            <div class="flex flex-col gap-2 col-span-2">
-                <span class="text-gray-500">Github Repository</span>
-                <a href="?#" class="text-primary hover:text-secondary">https://github.com/username/e-commerce</a>
-            </div>
+            {#if project?.github_setup}
+                <div class="flex flex-col gap-2 col-span-2">
+                    <span class="text-gray-500">Github Repository</span>
+                    <a href={project?.github_setup?.repository_url} class="text-primary hover:text-secondary">{project?.github_setup?.repository_url}</a>
+                </div>
+            {/if}
         </div>
     </div>
     
@@ -363,8 +400,15 @@ Targeting these areas promises competitive differentiation, strong user adoption
         <h3 class="text-3xl text-center">Incoming...</h3>
     </div>
     
-    <h1 class="text-3xl font-semibold text-gray-800">Kanban Board</h1>
-    <p class="text-gray-500">Manage your project tasks and progress</p>
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-semibold text-gray-800">Kanban Board</h1>
+            <p class="text-gray-500">Manage your project tasks and progress</p>
+        </div>
+        <button class="disabled:opacity-50 disabled:cursor-auto bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition-all">
+            Generate Tasks
+        </button>
+    </div>
     
     <div class="grid grid-cols-4 gap-6">
         <div class="flex flex-col gap-4">

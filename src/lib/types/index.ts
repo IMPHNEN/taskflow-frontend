@@ -24,7 +24,7 @@ export enum ProjectStatus {
 export interface Project {
   id: string;
   name: string;
-  description: string;
+  objective: string;
   user_id: string;
   industry?: string | null;
   estimated_income?: number | null;
@@ -38,7 +38,7 @@ export interface Project {
 
 export interface ProjectCreate {
   name: string;
-  description: string;
+  objective: string;
   industry?: string | null;
   estimated_income?: number | null;
   estimated_outcome?: number | null;
@@ -48,7 +48,7 @@ export interface ProjectCreate {
 
 export interface ProjectUpdate {
   name?: string;
-  description?: string;
+  objective?: string;
   industry?: string | null;
   estimated_income?: number | null;
   estimated_outcome?: number | null;
