@@ -78,7 +78,7 @@ export interface PRD {
 export interface MarketResearch {
   id: string;
   project_id: string;
-  research_data: string;
+  report_markdown: string;
   status: 'not_started' | 'in_progress' | 'completed' | 'failed';
   created_at: string;
   updated_at: string;
@@ -99,10 +99,13 @@ export interface ProjectDetail extends Project {
   prd: PRD | null;
   market_research: MarketResearch | null;
   github_setup: GitHubSetup | null;
+  tasks_generated: Task[];
+  task_generation_status: 'not_started' | 'in_progress' | 'completed' | 'failed';
 }
 
 // Task Types
 export enum TaskStatus {
+  BACKLOG = 'backlog',
   TODO = 'todo',
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed'

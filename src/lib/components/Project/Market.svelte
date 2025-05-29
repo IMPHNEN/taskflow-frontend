@@ -38,6 +38,6 @@
   });
 </script>
 
-<div id="market-markdown" class="prose max-w-none">
+<div class="markdown prose max-w-none">
   {@html htmlContent}
 </div>
