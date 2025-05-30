@@ -3,6 +3,7 @@
     import { page } from "$app/stores";
     import Sortable from "sortablejs";
     import { format } from "date-fns";
+    import { writable, derived } from "svelte/store";
 
     export const ssr = false;
 
@@ -17,9 +18,31 @@
         setupRepository,
         validateMarketFit,
     } from "$lib/actions";
-    import type { ProjectDetail } from "$lib/types";
+    import type { ProjectDetail, Task } from "$lib/types";
+    import { TaskStatus } from "$lib/types";
     import { projectStore } from "$lib/stores";
     import Brd from "$lib/components/Project/Brd.svelte";
+    import { TaskService } from "$lib/service";
+
+    // Map frontend status to backend status
+    const mapToBackendStatus = (status: TaskStatus): string => {
+        switch (status) {
+            case TaskStatus.COMPLETED:
+                return 'done';
+            default:
+                return status;
+        }
+    };
+
+    // Map backend status to frontend status
+    const mapToFrontendStatus = (status: string): TaskStatus => {
+        switch (status) {
+            case 'done':
+                return TaskStatus.COMPLETED;
+            default:
+                return status as TaskStatus;
+        }
+    };
 
     let showModal = $state(false);
     let showPRD = $state(false);
@@ -30,6 +53,30 @@
     let loading = $state(true);
     let error = $state("");
 
+    // Create a writable store for tasks
+    const tasksStore = writable<Record<TaskStatus, Task[]>>({
+        [TaskStatus.BACKLOG]: [],
+        [TaskStatus.TODO]: [],
+        [TaskStatus.IN_PROGRESS]: [],
+        [TaskStatus.COMPLETED]: []
+    });
+
+    // Create a derived store for sorted tasks
+    const sortedTasks = derived(tasksStore, ($tasks) => {
+        const sorted: Record<TaskStatus, Task[]> = {
+            [TaskStatus.BACKLOG]: [],
+            [TaskStatus.TODO]: [],
+            [TaskStatus.IN_PROGRESS]: [],
+            [TaskStatus.COMPLETED]: []
+        };
+
+        Object.entries($tasks).forEach(([status, tasks]) => {
+            sorted[status as TaskStatus] = [...tasks].sort((a, b) => a.position - b.position);
+        });
+
+        return sorted;
+    });
+
     // Subscribe to the project store
     const unsubscribe = projectStore.subscribe((state) => {
         project = state.currentProject;
@@ -37,49 +84,113 @@
         error = state.error || "";
     });
 
+    async function fetchTasksByStatus() {
+        if (!project) return;
+        
+        try {
+            const allTasks = await TaskService.listTasks(project.id);
+            const groupedTasks = allTasks.reduce((acc, task) => {
+                const frontendStatus = mapToFrontendStatus(task.status);
+                if (!acc[frontendStatus]) {
+                    acc[frontendStatus] = [];
+                }
+                acc[frontendStatus].push({
+                    ...task,
+                    status: frontendStatus
+                });
+                return acc;
+            }, {} as Record<TaskStatus, Task[]>);
+
+            // Update the tasks store
+            tasksStore.set({
+                [TaskStatus.BACKLOG]: groupedTasks[TaskStatus.BACKLOG] || [],
+                [TaskStatus.TODO]: groupedTasks[TaskStatus.TODO] || [],
+                [TaskStatus.IN_PROGRESS]: groupedTasks[TaskStatus.IN_PROGRESS] || [],
+                [TaskStatus.COMPLETED]: groupedTasks[TaskStatus.COMPLETED] || []
+            });
+        } catch (err) {
+            console.error('Failed to fetch tasks:', err);
+            error = "Failed to load tasks";
+        }
+    }
+
     onMount(() => {
         (async () => {
             try {
                 // Fetch projects and tasks in parallel
                 await loadProject($page.params.id);
+                await fetchTasksByStatus();
             } catch (err) {
                 console.error("Failed to fetch dashboard data:", err);
             }
         })();
 
-        // Initialize Sortable only after data is loaded
-        const initializeSortable = () => {
-            const backlog = document.getElementById("backlog");
-            const todo = document.getElementById("todo");
-            const inProgress = document.getElementById("in_progress");
-            const done = document.getElementById("completed");
-
-            if (backlog) new Sortable(backlog, { group: "shared", animation: 300 });
-            if (todo) new Sortable(todo, { group: "shared", animation: 300 });
-            if (inProgress) new Sortable(inProgress, { group: "shared", animation: 300 });
-            if (done) new Sortable(done, { group: "shared", animation: 300 });
-        };
-
-        // Initialize Sortable when data is loaded
-        if (!loading && project?.tasks_generated) {
-            initializeSortable();
-        }
-
         return unsubscribe;
     });
 
+    // Initialize Sortable and handle task reordering
     $effect(() => {
-        if (!loading && project?.tasks_generated) {
+        if (!loading && project) {
             setTimeout(() => {
-                const backlog = document.getElementById("backlog");
-                const todo = document.getElementById("todo");
-                const inProgress = document.getElementById("in_progress");
-                const done = document.getElementById("completed");
+                const columns = [
+                    TaskStatus.BACKLOG,
+                    TaskStatus.TODO,
+                    TaskStatus.IN_PROGRESS,
+                    TaskStatus.COMPLETED
+                ];
+                
+                columns.forEach(status => {
+                    const el = document.getElementById(status);
+                    if (el) {
+                        new Sortable(el, {
+                            group: "shared",
+                            animation: 300,
+                            onEnd: async (evt) => {
+                                const taskId = evt.item.getAttribute('data-task-id');
+                                const newStatus = evt.to.id as TaskStatus;
+                                const oldStatus = evt.from.id as TaskStatus;
+                                
+                                if (!taskId || !project) return;
 
-                if (backlog) new Sortable(backlog, { group: "shared", animation: 300 });
-                if (todo) new Sortable(todo, { group: "shared", animation: 300 });
-                if (inProgress) new Sortable(inProgress, { group: "shared", animation: 300 });
-                if (done) new Sortable(done, { group: "shared", animation: 300 });
+                                try {
+                                    // Update task status
+                                    await TaskService.updateTask(project.id, taskId, {
+                                        status: mapToBackendStatus(newStatus),
+                                        position: evt.newIndex
+                                    });
+
+                                    // Get current tasks
+                                    let currentTasks: Record<TaskStatus, Task[]> = {
+                                        [TaskStatus.BACKLOG]: [],
+                                        [TaskStatus.TODO]: [],
+                                        [TaskStatus.IN_PROGRESS]: [],
+                                        [TaskStatus.COMPLETED]: []
+                                    };
+                                    tasksStore.subscribe(tasks => {
+                                        currentTasks = tasks;
+                                    })();
+
+                                    // Reorder tasks in the new column
+                                    const tasks = currentTasks[newStatus];
+                                    
+                                    const taskOrders = tasks.map((task: Task, index: number) => ({
+                                        task_id: task.id,
+                                        position: index
+                                    }));
+
+                                    await TaskService.reorderTasks(project.id, taskOrders);
+
+                                    // Reload tasks to get updated order
+                                    await fetchTasksByStatus();
+                                } catch (err) {
+                                    console.error('Failed to update task:', err);
+                                    // Reload tasks to reset the view
+                                    await fetchTasksByStatus();
+                                }
+                            }
+                        });
+                    }
+                });
             }, 0);
         }
     });
@@ -233,32 +344,34 @@
             </div>
         {:else}
             <div class="grid grid-cols-4 gap-6 overflow-hidden">
-                {#each ['backlog', 'todo', 'in_progress', 'completed'] as status}
+                {#each [TaskStatus.BACKLOG, TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.COMPLETED] as status}
                     <div class="flex flex-col gap-4 h-[calc(100vh-16rem)]">
                         <div class="flex items-center justify-between bg-white p-4 rounded-lg shadow sticky top-0 z-10">
                             <div class="flex items-center gap-2">
-                                {#if status === 'backlog'}
+                                {#if status === TaskStatus.BACKLOG}
                                     <i class="bx bx-list-ul text-red-500 text-xl"></i>
-                                {:else if status === 'todo'}
+                                {:else if status === TaskStatus.TODO}
                                     <i class="bx bx-list-ul text-blue-500 text-xl"></i>
-                                {:else if status === 'in_progress'}
+                                {:else if status === TaskStatus.IN_PROGRESS}
                                     <i class="bx bx-loader text-yellow-500 text-xl"></i>
-                                {:else if status === 'completed'}
+                                {:else if status === TaskStatus.COMPLETED}
                                     <i class="bx bx-check-double text-green-500 text-xl"></i>
                                 {/if}
                                 <h2 class="font-medium capitalize">{status.replace('_', ' ')}</h2>
                             </div>
                             <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium">
-                                {(project?.tasks_generated || []).filter(t => t.status === status).length}
+                                {$tasksStore[status]?.length || 0}
                             </span>
                         </div>
 
-                        <div id={status} class="flex flex-col gap-3 overflow-y-auto pr-2">
-                            {#each (project?.tasks_generated || []).filter(t => t.status === status).sort((a, b) => a.position - b.position) as task}
-                                <Item
-                                    {...task}
-                                    handleContextMenu={() => (showModal = true)}
-                                />
+                        <div id={status} class="flex flex-col gap-3 overflow-y-auto pr-2 min-h-[400px]">
+                            {#each $sortedTasks[status] as task}
+                                <div data-task-id={task.id}>
+                                    <Item
+                                        {...task}
+                                        handleContextMenu={() => (showModal = true)}
+                                    />
+                                </div>
                             {/each}
                         </div>
                     </div>
