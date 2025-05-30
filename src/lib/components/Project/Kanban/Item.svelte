@@ -15,7 +15,7 @@
     }} 
     role="button"
     tabindex="0"
-    class="bg-white overflow-hidden rounded-lg shadow-sm hover:shadow transition-all cursor-pointer"
+    class="bg-white overflow-hidden rounded-lg shadow-sm hover:shadow transition-all cursor-pointer min-h-[200px]"
 >
     <div class="w-full h-1 {status === 'completed' ? 'bg-green-500' : status === 'in_progress' ? 'bg-yellow-500' : status === 'todo' ? 'bg-blue-500' : 'bg-red-500'}"></div>
     <div class="p-4">
