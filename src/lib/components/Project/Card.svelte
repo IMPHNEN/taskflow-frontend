@@ -92,7 +92,7 @@
         </div> -->
         <div>
             <p>
-            {project.description}
+            {project.objective}
             </p>
         </div>
     </div>

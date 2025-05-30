@@ -27,7 +27,7 @@
 
 <div class="h-dvh flex items-center justify-center bg-gray-50">
   <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md text-center">
-    {#if $authStore.isLoading}
+    {#if $authStore.loading}
       <h1 class="text-2xl font-semibold text-gray-900 mb-4">Authenticating...</h1>
       <p class="text-gray-600">Please wait while we authenticate you with GitHub.</p>
       <div class="mt-8 flex justify-center">

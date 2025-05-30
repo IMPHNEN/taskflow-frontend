@@ -137,11 +137,11 @@
 			</div>
 
 			<button
-                disabled={$isSubmitting || $isValidating || !$isValid || $authStore.isLoading}
+                disabled={$isSubmitting || $isValidating || !$isValid || $authStore.loading}
 				type="submit"
 				class="w-full py-3 px-4 mt-6 bg-[#2fcc71] disabled:opacity-50 text-white font-semibold rounded-lg hover:bg-[#27ae60] transition-colors text-base flex items-center justify-center gap-2"
 			>
-				{$isSubmitting || $authStore.isLoading ? 'Registering...' : 'Register'}
+				{$isSubmitting || $authStore.loading ? 'Registering...' : 'Register'}
 				<i class='bx bx-right-arrow-alt'></i>
 			</button>
 

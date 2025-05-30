@@ -667,7 +667,7 @@
     let showBRD = $state(false);
     let showGithubTnc = $state(false);
 
-    let project: ProjectDetail | null = null;
+    let project = $state<ProjectDetail | null>(null);
     let loading = true;
     let error = "";
 
@@ -870,9 +870,17 @@
                     </div>
 
                     <div id={status} class="flex flex-col gap-3">
-                        {#each project?.tasks_generated.filter(t => t.status === status).sort((a, b) => a.position - b.position) as task}
+                        {#each (project?.tasks_generated || []).filter(t => t.status === status).sort((a, b) => a.position - b.position) as task}
                             <Item
-                                {...task}
+                                id={task.id}
+                                project_id={task.project_id}
+                                title={task.title}
+                                description={task.description}
+                                status={task.status}
+                                position={task.position}
+                                created_at={task.created_at}
+                                updated_at={task.updated_at}
+                                project_name={task.project_name}
                                 handleContextMenu={() => (showModal = true)}
                             />
                         {/each}
