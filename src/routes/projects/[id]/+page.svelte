@@ -202,10 +202,34 @@
 </script>
 
 <svelte:head>
-    <title>E-Commerce Website</title>
+    <title>{project?.name}</title>
 </svelte:head>
 
 <div class="flex flex-col gap-4">
+    {#if project?.brd?.status === 'not_started' || project?.prd?.status === 'not_started' || project?.tasks_generation_status === 'not_started' || project?.brd?.status === 'in_progress' || project?.prd?.status === 'in_progress' || project?.tasks_generation_status === 'in_progress'}
+    <div on:click={(e) => e.currentTarget.remove()} class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4 rounded">
+        <div class="flex items-start gap-3">
+            <i class="bx bx-bulb text-2xl text-blue-500"></i>
+            <div>
+                <h3 class="font-medium text-blue-800 mb-1">Welcome to your project!</h3>
+                <p class="text-blue-600 text-sm">Let's get started with these steps:</p>
+                <ol class="list-decimal list-inside mt-2 space-y-1 text-sm text-blue-700">
+                    <li>Click "View BRD" button in project details to see your Business Requirements Document</li>
+                    <li>After completing BRD, click "View PRD" button in project details to see your Product Requirements Document</li>
+                    <li>Finally, you can see the tasks in the kanban board based on the requirements you've created</li>
+                    <li>Or generate market research to see the market research report based on your project</li>
+                </ol>
+                <p class="text-blue-600 text-sm mt-2">Good luck with your project and happy hacking!</p>
+            </div>
+        </div>
+    </div>
+    <div on:click={(e) => e.currentTarget.remove()} class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded">
+        <div class="flex items-start gap-3">
+            <i class="bx bx-error-circle text-2xl text-red-500"></i>
+            <h3 class="font-medium text-red-800 mb-1">System automically generate documents based on the requirements, if not, you can generate them manually.</h3>
+        </div>
+    </div>
+    {/if}
     {#if loading}
         <div class="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg shadow">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
@@ -229,11 +253,11 @@
                     <h2 class="font-medium">Project Details</h2>
                 </div>
                 <div class="flex gap-2">
-                    <button
+                    <!-- <button
                         class="bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition-all"
                     >
                         Edit Project
-                    </button>
+                    </button> -->
                     <button
                         on:click={() => (showGithubTnc = true)}
                         class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition-all flex items-center gap-2 ml-2"
@@ -328,20 +352,28 @@
                 <h1 class="text-3xl font-semibold text-gray-800">Kanban Board</h1>
                 <p class="text-gray-500">Manage your project tasks and progress</p>
             </div>
+            {#if !project?.tasks_generated?.length}
             <button
                 on:click={() => generateProjectScope(project!.id)} 
                 class="disabled:opacity-50 disabled:cursor-auto bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition-all"
             >
                 Generate Tasks
             </button>
+            {/if}
         </div>
 
-        {#if !project?.tasks_generated || project?.tasks_generated.length === 0}
+        {#if project?.tasks_generation_status === 'not_started' && (!project?.tasks_generated || project?.tasks_generated?.length === 0)}
             <div class="flex flex-col items-center justify-center py-12 bg-white rounded-lg shadow">
                 <i class="bx bx-task text-6xl text-gray-300 mb-4"></i>
                 <h3 class="text-xl font-medium text-gray-600 mb-2">No tasks yet</h3>
                 <p class="text-gray-500">Let's generate some tasks to make our project more organized!</p>
             </div>
+        {:else if project?.tasks_generation_status === 'in_progress'}
+        <div class="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg shadow">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+            <p class="text-gray-600">Generating tasks...</p>
+            <span class="text-gray-500">This may take a while, you can refresh the page</span>
+        </div>
         {:else}
             <div class="grid grid-cols-4 gap-6 overflow-hidden">
                 {#each [TaskStatus.BACKLOG, TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.COMPLETED] as status}
@@ -416,6 +448,7 @@
                         class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"
                     ></div>
                     <p class="text-gray-600">Generating market research...</p>
+                    <span class="text-gray-500">This may take a while, you can refresh the page</span>
                 </div>
             {:else if project?.market_research?.status === "failed"}
                 <div class="flex flex-col items-center justify-center py-8">
@@ -448,50 +481,77 @@
     <div
         class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
     >
-        <div class="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-semibold">GitHub Terms & Conditions</h3>
+        <div class="bg-gradient-to-br from-gray-50 to-white sm:rounded-2xl p-8 max-sm:h-full md:max-w-lg w-full md:mx-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-4">
+                    <div class="bg-gray-800 flex justify-center items-center p-3 rounded-xl">
+                        <i class="bx bxl-github text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">GitHub Terms</h3>
+                </div>
                 <button
-                    class="text-gray-500 hover:text-gray-700"
+                    class="p-2 hover:bg-gray-100 flex justify-center items-center rounded-full transition-all duration-200"
                     on:click={() => (showGithubTnc = false)}
                 >
-                    <i class="bx bx-x text-2xl"></i>
+                    <i class="bx bx-x text-2xl text-gray-500"></i>
                 </button>
             </div>
 
-            <div class="prose prose-sm max-h-96 overflow-y-auto mb-4">
-                <p>By connecting your GitHub account, you agree to:</p>
-                <ul class="list-disc pl-4 space-y-2">
-                    <li>Grant read-only access to your public repositories</li>
-                    <li>Allow us to store relevant repository data</li>
-                    <li>
-                        Use this data for project analysis and recommendations
-                    </li>
-                    <li>Maintain the confidentiality of your sensitive data</li>
-                </ul>
-                <p class="mt-4">We will not:</p>
-                <ul class="list-disc pl-4 space-y-2">
-                    <li>Access your private repositories</li>
-                    <li>Make changes to your repositories</li>
-                    <li>Share your data with third parties</li>
-                </ul>
+            <div class="space-y-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="bx bx-check-shield text-green-500"></i>
+                        What you agree to
+                    </h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <i class="bx bx-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Grant read-only access to your public repositories</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="bx bx-check text-green-500 mt-1"></i>
+                            <span class="text-gray-600">Allow us to store relevant repository data</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="bx bx-shield-x text-red-500"></i>
+                        What we won't do
+                    </h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <i class="bx bx-x text-red-500 mt-1"></i>
+                            <span class="text-gray-600">Access your private repositories</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="bx bx-x text-red-500 mt-1"></i>
+                            <span class="text-gray-600">Make changes to your repositories</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="bx bx-x text-red-500 mt-1"></i>
+                            <span class="text-gray-600">Share your data with third parties</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="flex justify-end gap-3">
+            <div class="flex justify-end gap-4">
                 <button
-                    class="px-4 py-2 text-gray-600 hover:text-gray-800"
+                    class="px-6 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200 font-medium"
                     on:click={() => (showGithubTnc = false)}
                 >
                     Cancel
                 </button>
                 <button
-                    class="px-4 py-2 bg-primary text-white rounded hover:bg-secondary transition-colors"
+                    class="px-6 py-2.5 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition-all duration-200 font-medium flex items-center gap-2 group"
                     on:click={() => {
                         showGithubTnc = false;
-                        // Add GitHub connection logic here
                     }}
                 >
-                    Agree & Continue
+                    <span>Agree & Continue</span>
+                    <i class="bx bx-right-arrow-alt text-xl group-hover:translate-x-1 transition-transform"></i>
                 </button>
             </div>
         </div>

@@ -61,42 +61,13 @@
         </div>
     </div>
     <div class="flex flex-col gap-4 text-sm text-gray-700 bg-gray-50 rounded-lg">
-        <!-- ? another information -->
-        <!-- <div class="flex justify-between items-center hover:bg-white p-2 rounded transition-colors">
-            <div class="flex items-center gap-3">
-                <i class="bx bx-time text-xl text-orange-500"></i>
-                <span class="font-medium">Backlog</span>
-            </div>
-            <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-medium">3</span>
-        </div>
-        <div class="flex justify-between items-center hover:bg-white p-2 rounded transition-colors">
-            <div class="flex items-center gap-3">
-                <i class="bx bx-list-ul text-xl text-blue-500"></i>
-                <span class="font-medium">Todo</span>
-            </div>
-            <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full font-medium">5</span>
-        </div>
-        <div class="flex justify-between items-center hover:bg-white p-2 rounded transition-colors">
-            <div class="flex items-center gap-3">
-                <i class="bx bx-loader text-xl text-yellow-500"></i>
-                <span class="font-medium">Progress</span>
-            </div>
-            <span class="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full font-medium">2</span>
-        </div>
-        <div class="flex justify-between items-center hover:bg-white p-2 rounded transition-colors">
-            <div class="flex items-center gap-3">
-                <i class="bx bx-check-circle text-xl text-green-500"></i>
-                <span class="font-medium">Done</span>
-            </div>
-            <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full font-medium">8</span>
-        </div> -->
         <div>
             <p>
             {project.objective}
             </p>
         </div>
     </div>
-    <div class="flex gap-2 flex-wrap">
+    <!-- <div class="flex gap-2 flex-wrap">
         <div class="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
             <i class="bx bx-error-circle"></i>
             {Math.floor(Math.random() * 10)} Backlog
@@ -113,7 +84,7 @@
             <i class="bx bx-check-double"></i>
             {Math.floor(Math.random() * 10)} Done
         </div>
-    </div>
+    </div> -->
 
     <div class="flex items-center gap-1 font-light text-gray-500 text-xs">
         <i class="bx bx-calendar-alt"></i>

@@ -100,7 +100,7 @@ export interface ProjectDetail extends Project {
   market_research: MarketResearch | null;
   github_setup: GitHubSetup | null;
   tasks_generated: Task[];
-  task_generation_status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+  tasks_generation_status: 'not_started' | 'in_progress' | 'completed' | 'failed';
 }
 
 // Task Types

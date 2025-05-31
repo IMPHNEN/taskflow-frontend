@@ -20,7 +20,6 @@ async function fetchWithInterceptors<T>(
   
   // Build URL with query params if needed
   let url = `${BASE_URL}${endpoint}`;
-  console.log(url)
   if (config.params) {
     const queryParams = new URLSearchParams();
     Object.entries(config.params).forEach(([key, value]) => {
